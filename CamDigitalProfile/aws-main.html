@@ -1,107 +1,191 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-  <meta charset="utf-8" />
-  <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-  <title>AWS Services Used</title>
-  <link href="assets/img/HammondCameron(web, Square).jpg" rel="icon" />
-  <link href="assets/img/HammondCameron(web, Square).jpg" rel="apple-touch-icon" />
-  <link href="assets/vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet" />
-  <link href="assets/vendor/bootstrap-icons/bootstrap-icons.css" rel="stylesheet" />
-  <link href="assets/vendor/aos/aos.css" rel="stylesheet" />
-  <link href="assets/vendor/glightbox/css/glightbox.min.css" rel="stylesheet" />
-  <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
-  <link href="assets/css/main.css" rel="stylesheet" />
-</head>
+  <head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>AWS Services Used</title>
+    <link href="assets/img/HammondCameron(web, Square).jpg" rel="icon" />
+    <link
+      href="assets/img/HammondCameron(web, Square).jpg"
+      rel="apple-touch-icon"
+    />
+    <link
+      href="assets/vendor/bootstrap/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="assets/vendor/bootstrap-icons/bootstrap-icons.css"
+      rel="stylesheet"
+    />
+    <link href="assets/vendor/aos/aos.css" rel="stylesheet" />
+    <link
+      href="assets/vendor/glightbox/css/glightbox.min.css"
+      rel="stylesheet"
+    />
+    <link href="assets/vendor/swiper/swiper-bundle.min.css" rel="stylesheet" />
+    <link href="assets/css/main.css" rel="stylesheet" />
+  </head>
 
-<body class="index-page">
-  <!-- ✅ Sidebar from index.html -->
-  <header id="header" class="header dark-background d-flex flex-column">
-    <i class="header-toggle d-xl-none bi bi-list"></i>
+  <body class="index-page">
+    <!-- ✅ Sidebar from index.html -->
+    <header id="header" class="header dark-background d-flex flex-column">
+      <i class="header-toggle d-xl-none bi bi-list"></i>
 
-    <div class="profile-img">
-      <img src="assets/img/HammondCameron(web, Square).jpg" alt="" class="img-fluid rounded-circle" />
-    </div>
-
-    <a href="index.html" class="logo d-flex align-items-center justify-content-center">
-      <h1 class="sitename">Cameron Hammond</h1>
-    </a>
-
-    <div class="social-links text-center">
-      <a href="https://www.facebook.com/cameron.hammond.583" class="facebook"><i class="bi bi-facebook"></i></a>
-      <a href="https://www.instagram.com/camham55/" class="instagram"><i class="bi bi-instagram"></i></a>
-      <a href="https://www.linkedin.com/in/cameron-hammond-317993140/" class="linkedin"><i class="bi bi-linkedin"></i></a>
-    </div>
-
-    <nav id="navmenu" class="navmenu">
-      <ul>
-        <li><a href="index.html"><i class="bi bi-house navicon"></i>Home</a></li>
-        <li><a href="index.html#about"><i class="bi bi-person navicon"></i>About</a></li>
-        <li><a href="index.html#resume"><i class="bi bi-file-earmark-text navicon"></i>Resume</a></li>
-        
-        <li class="dropdown">
-          <a href="aws-main.html" class="active"><i class="bi bi-menu-button navicon"></i><span>AWS Services Used</span> <i class="bi bi-chevron-down toggle-dropdown"></i></a>
-          <ul>
-            <li><a href="aws-lambda.html">Lambda Function Example</a></li>
-            <li><a href="aws-diagram.html">Infrastructure Diagram</a></li>
-            <li><a href="aws-dynamodb.html">DynamoDB Use Case</a></li>
-          </ul>
-        </li>
-        
-      </ul>
-    </nav>
-  </header>
-
-  <main class="main">
-    <section class="section">
-      <div class="container section-title" data-aos="fade-up">
-        <h2>AWS Services Used</h2>
-        <p>Explore the infrastructure powering this site, built entirely using AWS cloud services and serverless technologies.</p>
+      <div class="profile-img">
+        <img
+          src="assets/img/HammondCameron(web, Square).jpg"
+          alt=""
+          class="img-fluid rounded-circle"
+        />
       </div>
 
-      <div class="container" data-aos="fade-up" data-aos-delay="100">
-        <div class="row gy-4">
+      <a
+        href="index.html"
+        class="logo d-flex align-items-center justify-content-center"
+      >
+        <h1 class="sitename">Cameron Hammond</h1>
+      </a>
+
+      <div class="social-links text-center">
+        <a href="https://www.facebook.com/cameron.hammond.583" class="facebook"
+          ><i class="bi bi-facebook"></i
+        ></a>
+        <a href="https://www.instagram.com/camham55/" class="instagram"
+          ><i class="bi bi-instagram"></i
+        ></a>
+        <a
+          href="https://www.linkedin.com/in/cameron-hammond-317993140/"
+          class="linkedin"
+          ><i class="bi bi-linkedin"></i
+        ></a>
+      </div>
+
+      <nav id="navmenu" class="navmenu">
+        <ul>
+          <li>
+            <a href="index.html"><i class="bi bi-house navicon"></i>Home</a>
+          </li>
+          <li>
+            <a href="index.html#about"
+              ><i class="bi bi-person navicon"></i>About</a
+            >
+          </li>
+          <li>
+            <a href="index.html#resume"
+              ><i class="bi bi-file-earmark-text navicon"></i>Resume</a
+            >
+          </li>
+
+          <li class="dropdown">
+            <a href="aws-main.html" class="active"
+              ><i class="bi bi-menu-button navicon"></i
+              ><span>AWS Services Used</span>
+              <i class="bi bi-chevron-down toggle-dropdown"></i
+            ></a>
+            <ul>
+              <li><a href="aws-lambda.html">Lambda Function Example</a></li>
+              <li><a href="aws-diagram.html">Infrastructure Diagram</a></li>
+              <li><a href="aws-dynamodb.html">DynamoDB Use Case</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </header>
+
+    <main class="main">
+      <section class="section">
+        <div class="container section-title" data-aos="fade-up">
+          <h2>AWS Services Used</h2>
+          <p>
+            Explore the infrastructure powering this site, built entirely using
+            AWS cloud services and serverless technologies.
+          </p>
+        </div>
+
+        <div class="container" data-aos="fade-up" data-aos-delay="100">
+          <div class="row gy-4">
             <div class="col-md-6">
-                <h4>Amazon S3 (Static Hosting + Assets)</h4>
-                <p>
-                  Not only is this entire website hosted on S3, but the assets related to this fun list of my personal favorite books is hosted and dynamically pulled from an S3 bucket.
-                </p>
-                <a href="s3-books.html" class="btn btn-outline-secondary btn-sm rounded-pill mt-2">
-                  View S3-Powered Book Gallery
-                </a>
-              </div>
-              
-          <div class="col-md-6">
-            <h4>Lambda & API Gateway</h4>
-            <p>All backend logic is serverless. Requests go through API Gateway and trigger Lambda functions for compute power on demand.</p>
-          </div>
-          <div class="col-md-6">
-            <h4>DynamoDB</h4>
-            <p>Highly scalable NoSQL database used for storing structured data and simulating real-time interactions (e.g. restaurant apps).</p>
-          </div>
-          <div class="col-md-6">
-            <h4>Terraform</h4>
-            <p>Infrastructure as Code for creating, modifying, and managing all AWS components reliably and repeatedly.</p>
+              <h4>Amazon S3 (Static Hosting + Assets)</h4>
+              <p>
+                Not only is this entire website hosted on S3, but the assets
+                related to this fun list of my personal favorite books is hosted
+                and dynamically pulled from an S3 bucket.
+              </p>
+              <a
+                href="s3-books.html"
+                class="btn btn-outline-secondary btn-sm rounded-pill mt-2"
+              >
+                View S3-Powered Book Gallery
+              </a>
+            </div>
+
+            <div class="col-md-6">
+              <h4>Lambda & API Gateway</h4>
+              <p>
+                All backend logic is serverless. Requests go through API Gateway
+                and trigger Lambda functions for compute power on demand.
+              </p>
+              <a
+                href="lambda-and-API-Gateway.html"
+                class="btn btn-outline-secondary btn-sm rounded-pill mt-2"
+              >
+                View and Interact with Lambda
+              </a>
+            </div>
+            <div class="col-md-6">
+              <h4>DynamoDB</h4>
+              <p>
+                Highly scalable NoSQL database used for storing structured data
+                and simulating real-time interactions (e.g. restaurant apps).
+              </p>
+              <a
+                href="DynamoDB-view.html"
+                class="btn btn-outline-secondary btn-sm rounded-pill mt-2"
+              >
+                View DynamoDB
+              </a>
+            </div>
+            <div class="col-md-6">
+              <h4>Terraform</h4>
+              <p>
+                Infrastructure as Code for creating, modifying, and managing all
+                AWS components reliably and repeatedly.
+              </p>
+              <a
+                href="#"
+                class="btn btn-outline-secondary btn-sm rounded-pill mt-2"
+              >
+                Coming Soon
+              </a>
+            </div>
           </div>
         </div>
+      </section>
+    </main>
+
+    <footer id="footer" class="footer position-relative light-background">
+      <div class="container text-center">
+        <p>
+          © <span>Copyright</span>
+          <strong class="px-1 sitename">iPortfolio</strong>
+          <span>All Rights Reserved</span>
+        </p>
       </div>
-    </section>
-  </main>
+    </footer>
 
-  <footer id="footer" class="footer position-relative light-background">
-    <div class="container text-center">
-      <p>© <span>Copyright</span> <strong class="px-1 sitename">iPortfolio</strong> <span>All Rights Reserved</span></p>
-    </div>
-  </footer>
+    <a
+      href="#"
+      id="scroll-top"
+      class="scroll-top d-flex align-items-center justify-content-center"
+      ><i class="bi bi-arrow-up-short"></i
+    ></a>
+    <div id="preloader"></div>
 
-  <a href="#" id="scroll-top" class="scroll-top d-flex align-items-center justify-content-center"><i class="bi bi-arrow-up-short"></i></a>
-  <div id="preloader"></div>
-
-  <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <script src="assets/vendor/aos/aos.js"></script>
-  <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
-  <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
-  <script src="assets/vendor/php-email-form/validate.js"></script>
-  <script src="assets/js/main.js"></script>
-</body>
+    <script src="assets/vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+    <script src="assets/vendor/aos/aos.js"></script>
+    <script src="assets/vendor/glightbox/js/glightbox.min.js"></script>
+    <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
+    <script src="assets/vendor/php-email-form/validate.js"></script>
+    <script src="assets/js/main.js"></script>
+  </body>
 </html>
