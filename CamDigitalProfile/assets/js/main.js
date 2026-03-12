@@ -226,4 +226,92 @@
   window.addEventListener('load', navmenuScrollspy);
   document.addEventListener('scroll', navmenuScrollspy);
 
+  /**
+   * Simple AI chat UI wiring
+   */
+  const chatMessages = document.querySelector('#ai-chat-messages');
+  const chatInput = document.querySelector('#ai-chat-input');
+  const chatSend = document.querySelector('#ai-chat-send');
+  const chatStatus = document.querySelector('#ai-chat-status');
+
+  function appendMessage(role, text) {
+    if (!chatMessages) return;
+    const wrapper = document.createElement('div');
+    wrapper.className = role === 'user' ? 'mb-2 text-end' : 'mb-2 text-start';
+
+    const bubble = document.createElement('div');
+    bubble.className =
+      'd-inline-block px-3 py-2 rounded-3 ' +
+      (role === 'user' ? 'bg-primary text-white' : 'bg-light border');
+    bubble.textContent = text;
+
+    wrapper.appendChild(bubble);
+    chatMessages.appendChild(wrapper);
+    chatMessages.scrollTop = chatMessages.scrollHeight;
+  }
+
+  async function sendChatMessage() {
+    if (!chatInput || !chatSend) return;
+    const message = chatInput.value.trim();
+    if (!message) return;
+
+    appendMessage('user', message);
+    chatInput.value = '';
+
+    chatSend.disabled = true;
+    if (chatStatus) {
+      chatStatus.textContent = 'Thinking...';
+    }
+
+    try {
+      const response = await fetch('https://YOUR_AGENT_BACKEND_DOMAIN_OR_URL/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ message })
+      });
+
+      if (!response.ok) {
+        appendMessage(
+          'assistant',
+          'Sorry, something went wrong when contacting the AI agent. Please try again.'
+        );
+        return;
+      }
+
+      const data = await response.json();
+      if (data && data.reply) {
+        appendMessage('assistant', data.reply);
+      } else if (data && data.error && data.error.message) {
+        appendMessage('assistant', data.error.message);
+      } else {
+        appendMessage(
+          'assistant',
+          'The AI agent returned an unexpected response. Please try again.'
+        );
+      }
+    } catch (err) {
+      appendMessage(
+        'assistant',
+        'Network error while talking to the AI agent. Please check your connection and try again.'
+      );
+    } finally {
+      chatSend.disabled = false;
+      if (chatStatus) {
+        chatStatus.textContent = '';
+      }
+    }
+  }
+
+  if (chatSend && chatInput) {
+    chatSend.addEventListener('click', sendChatMessage);
+    chatInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && !e.shiftKey) {
+        e.preventDefault();
+        sendChatMessage();
+      }
+    });
+  }
+
 })();
