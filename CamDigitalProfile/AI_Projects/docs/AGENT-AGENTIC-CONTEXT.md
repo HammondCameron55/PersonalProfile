@@ -171,7 +171,63 @@ Agents working on this feature should treat its evolution in phases:
 
 ---
 
-## 9. How Other Agents Should Use This Document
+## 9. Unit 8: RAG, Multi-Tool Agents, and Memory
+
+Unit 8 (`https://d1dtpagvh0qhqn.cloudfront.net/agentic8WebSlides/`) extends the expectations for this project:
+
+- **RAG / Knowledge Base**
+  - Implement a `knowledge_base` (or similarly named) tool that performs **semantic search** over a small document set (e.g. Cameron’s resume, selected portfolio docs, PRD excerpts).
+  - Use embeddings (e.g. OpenAI `text-embedding-3-small` or another provider) and an **in-memory vector store** (e.g. `MemoryVectorStore` from `@langchain/classic`) suitable for a small homework-scale knowledge base.
+  - The tool should:
+    - Take a natural-language `query` string.
+    - Return top-k relevant snippets with **source attribution** (e.g. file name or section).
+    - Gracefully handle “no results” cases.
+
+- **Multi-Tool Agent**
+  - The deployed agent must be able to route between **at least three tools**:
+    - `calculator`
+    - `web_search`
+    - `knowledge_base` (RAG)
+  - Tool **descriptions** must clearly instruct the model when to choose each tool so it can:
+    - Use RAG for “what does Cameron’s resume say about…” type questions.
+    - Use web search for current/external info.
+    - Use calculator for numeric reasoning.
+  - The architecture should allow **tool chaining**, e.g.:
+    - RAG to fetch pricing info → calculator to compute totals → final natural language answer.
+
+- **Conversation Memory**
+  - Maintain a **message history** across turns in the web UI so the agent can handle follow-up questions (e.g. “And what about per year?” after an earlier answer).
+  - A simple implementation is acceptable:
+    - Keep an in-memory `messageHistory` array.
+    - Append each user and assistant message.
+    - Pass the full history to `agent.invoke({ messages: messageHistory })` on each request.
+  - To keep things simple and safe:
+    - You may implement naive truncation (e.g. keep only the last N messages) to respect context limits.
+    - You do **not** need sophisticated summarization for this assignment.
+
+- **Production & Safety Considerations (Scaled to Homework Scope)**
+  - **Cost and iteration limits:**
+    - Use a smaller model (e.g. `claude-haiku-3-5` or `gpt-4o-mini`) where possible.
+    - Set a reasonable recursion/iteration limit on the agent to avoid runaway loops.
+  - **Security:**
+    - Never hardcode API keys; use environment variables as already required by JARVIS.
+    - Treat calculator expressions and any tool inputs as untrusted; for production you would use safe math libraries instead of `Function`/`eval`.
+    - Sanitize any user input that might be passed through to tools, especially web search or external APIs.
+  - **Debuggability:**
+    - Log each tool call (tool name, arguments, result summary) using **structured JSON logging** described in JARVIS.
+    - Make it easy to see, after the fact, which tools were used for a given user query.
+
+- **Assignment-Level Outcome**
+  - By the time this feature is “done” for the course-style assignment, the site should have:
+    - A working multi-tool agent (calculator, web search, RAG) with basic conversation memory.
+    - A web UI chat surface integrated into the existing portfolio site.
+    - Minimal but clear documentation and logging to demonstrate understanding of the agentic stack.
+
+---
+
+---
+
+## 10. How Other Agents Should Use This Document
 
 - When assigned to work on the **AI agent / chat UI**:
   1. Read `JARVIS-ACCOUNTABILITY.md`.
@@ -184,8 +240,9 @@ Agents working on this feature should treat its evolution in phases:
 
 ---
 
-## 10. References
+## 11. References
 
 - Dev Unit 7 — Building AI Agents: `https://d1dtpagvh0qhqn.cloudfront.net/agentic7WebSlides/`
+- Dev Unit 8 — RAG & Multi-Tool Agents: `https://d1dtpagvh0qhqn.cloudfront.net/agentic8WebSlides/`
 - Agentic Development Course Index: `https://d1dtpagvh0qhqn.cloudfront.net/agenticDevelopment.html`
 - JARVIS Pipeline and Rules: `CamDigitalProfile/AI_Projects/docs/JARVIS-ACCOUNTABILITY.md`
