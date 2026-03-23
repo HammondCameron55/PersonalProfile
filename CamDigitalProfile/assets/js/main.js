@@ -226,4 +226,84 @@
   window.addEventListener('load', navmenuScrollspy);
   document.addEventListener('scroll', navmenuScrollspy);
 
+  /**
+   * Portfolio AI agent chat widget
+   */
+  const chatForm = document.querySelector('#agent-chat-form');
+  const chatInput = document.querySelector('#agent-chat-input');
+  const chatTranscript = document.querySelector('#agent-chat-transcript');
+  const chatStatus = document.querySelector('#agent-chat-status');
+  const chatSendButton = document.querySelector('#agent-chat-send');
+  const sessionStorageKey = 'cam_agent_session_id';
+
+  function getSessionId() {
+    let value = sessionStorage.getItem(sessionStorageKey);
+    if (!value) {
+      value = `session_${Date.now()}_${Math.random().toString(16).slice(2)}`;
+      sessionStorage.setItem(sessionStorageKey, value);
+    }
+    return value;
+  }
+
+  function appendMessage(role, content, toolsUsed) {
+    const messageElement = document.createElement('div');
+    messageElement.className = role === 'user' ? 'agent-msg agent-msg--user' : 'agent-msg agent-msg--assistant';
+    messageElement.textContent = content;
+    chatTranscript.appendChild(messageElement);
+
+    if (Array.isArray(toolsUsed) && toolsUsed.length > 0) {
+      const toolsElement = document.createElement('p');
+      toolsElement.className = 'agent-tools-used';
+      toolsElement.textContent = `Tools used: ${toolsUsed.join(', ')}`;
+      chatTranscript.appendChild(toolsElement);
+    }
+
+    chatTranscript.scrollTop = chatTranscript.scrollHeight;
+  }
+
+  async function sendMessage(message) {
+    const endpoint = window.AGENT_CHAT_ENDPOINT || '/api/agent/chat';
+    const response = await fetch(endpoint, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        message,
+        sessionId: getSessionId()
+      })
+    });
+    return response;
+  }
+
+  if (chatForm && chatInput && chatTranscript && chatStatus && chatSendButton) {
+    chatForm.addEventListener('submit', async (event) => {
+      event.preventDefault();
+      const message = chatInput.value.trim();
+      if (!message) return;
+
+      appendMessage('user', message);
+      chatInput.value = '';
+      chatStatus.textContent = 'Thinking...';
+      chatSendButton.disabled = true;
+
+      try {
+        const response = await sendMessage(message);
+        const payload = await response.json();
+
+        if (!response.ok) {
+          throw new Error(payload.error || 'Request failed.');
+        }
+
+        appendMessage('assistant', payload.answer, payload.toolsUsed);
+        chatStatus.textContent = '';
+      } catch (error) {
+        appendMessage('assistant', `Sorry, I hit an error: ${error.message}`);
+        chatStatus.textContent = 'Request failed. Please try again.';
+      } finally {
+        chatSendButton.disabled = false;
+      }
+    });
+  }
+
 })();

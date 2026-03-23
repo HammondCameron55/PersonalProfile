@@ -242,6 +242,40 @@
         </div>
       </section>
 
+      <section id="ai-agent-chat" class="section light-background">
+        <div class="container" data-aos="fade-up">
+          <div class="section-title pb-4">
+            <h2>Ask Cameron's AI Agent</h2>
+            <p>
+              Ask about Cameron's background, projects, or technical decisions.
+              The assistant can use calculator, web search, and knowledge tools.
+            </p>
+          </div>
+          <div class="agent-chat card shadow-sm border-0">
+            <div id="agent-chat-transcript" class="agent-chat-transcript">
+              <div class="agent-msg agent-msg--assistant">
+                Hi, I am Cameron's AI agent. Ask me anything about his
+                experience or projects.
+              </div>
+            </div>
+            <form id="agent-chat-form" class="agent-chat-form">
+              <label class="visually-hidden" for="agent-chat-input">Message</label>
+              <textarea
+                id="agent-chat-input"
+                rows="2"
+                maxlength="5000"
+                placeholder="Example: What AWS services power this site?"
+                required
+              ></textarea>
+              <button id="agent-chat-send" type="submit" class="btn btn-primary">
+                Send
+              </button>
+            </form>
+            <p id="agent-chat-status" class="agent-chat-status" aria-live="polite"></p>
+          </div>
+        </div>
+      </section>
+
       <!-- Updated Skills Section -->
       <section id="skills" class="skills section light-background">
         <div class="container section-title" data-aos="fade-up">
