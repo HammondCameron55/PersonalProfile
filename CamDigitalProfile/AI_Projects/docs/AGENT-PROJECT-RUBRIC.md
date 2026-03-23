@@ -1,144 +1,134 @@
 ## Agent Project Rubric — CamDigitalProfile
 
 **Purpose:**  
-This rubric describes the concrete requirements for the AI agent feature on the CamDigitalProfile site. It is adapted from the Agentic Development course (Units 7–8) and tailored to this portfolio project. Use this as the single checklist for “what done looks like” for the assignment.
+This rubric is the authoritative checklist for the CamDigitalProfile multi-tool AI agent project. It merges course assignment requirements with repository standards so "done" is clear, testable, and auditable.
 
 ---
 
-### 1. Core Agent Requirements
+### 1. Assignment Outcome (What Must Exist)
 
-- **1.1 Agent behavior**
-  - The site exposes a **chat-style interface** where users can talk to an AI agent.
-  - The agent runs a **ReAct-style loop** (LLM + tools + reasoning loop) via LangChain.js (or equivalent agent framework).
-  - The agent is **scoped** to:
-    - Explaining Cameron, his projects, and the agentic material.
-    - Demonstrating the tools below (calculator, web search, later RAG).
-
-- **1.2 Models and framework**
-  - Uses a modern LLM (Anthropic or OpenAI) with an API key loaded from environment variables.
-  - Uses LangChain.js (or equivalent) with explicit **tool definitions** (name, description, Zod schema).
+- A recruiter-facing **multi-tool chatbot** built with LangChain.js and ReAct-style behavior.
+- Required capabilities:
+  - `calculator` tool
+  - `web_search` tool (Tavily or equivalent)
+  - `knowledge_base` RAG tool over at least 5 meaningful docs with source attribution
+  - conversation memory for multi-turn follow-ups
+  - web UI chat experience integrated into the site (terminal-only is not the target)
+- Streaming responses are recommended but not required for assignment completion.
 
 ---
 
-### 2. Required Tools
+### 2. Core Agent and Model Requirements
 
-- **2.1 Calculator tool (mandatory)**
-  - **Name:** `calculator` (or equivalent, but keep consistent).
-  - **Schema:** `{ expression: string }` using Zod.
-  - **Behavior:**
-    - Evaluates mathematical expressions (e.g. `1523 * 456`, percentages).
-    - Returns a **string** result.
-    - **Catches errors** and returns an error message instead of throwing.
-  - **Tool description** clearly states:
-    - Use for arithmetic, percentages, or calculations where precision matters.
+- **2.1 Agent behavior**
+  - Uses a ReAct-style loop (LLM + tools + iterative reasoning).
+  - Is scoped to Cameron's profile, projects, and agentic AI demonstration; not a general-purpose assistant.
+  - Can route to the correct tool by user intent.
 
-- **2.2 Web search tool (mandatory)**
-  - **Name:** `web_search` (or equivalent).
-  - **Schema:** `{ query: string }`.
-  - **Backend:** Tavily or similar web search API.
-  - **Behavior:**
-    - Searches the web for **current information** not in model training data.
-    - Returns a formatted string summarizing top results with titles and URLs.
-  - **Tool description** clearly states:
-    - Use for up-to-date information: news, current events, prices, recent releases, etc.
-
-- **2.3 RAG / knowledge base tool (assignment-level “complete”)**
-  - **Name:** `knowledge_base` or similar.
-  - **Schema:** `{ query: string }`.
-  - **Backend:**
-    - Embeddings (e.g. OpenAI `text-embedding-3-small`) + in-memory vector store (e.g. `MemoryVectorStore`).
-    - Documents drawn from Cameron’s own materials (resume, selected docs, course notes, etc.).
-  - **Behavior:**
-    - Performs semantic search and returns top-k snippets with **source attribution**.
-    - Returns a clear “no relevant documents found” message when appropriate.
+- **2.2 Models and framework**
+  - Uses LangChain.js (or equivalent) with explicit tool metadata (name, description, Zod schema).
+  - Uses a modern hosted LLM with API key from environment variables.
+  - **Provider clarification:** Anthropic/OpenAI are acceptable examples in class materials; **Gemini is also accepted** for this project.
 
 ---
 
-### 3. Multi-Tool Agent & Conversation Memory
+### 3. Required Tools (All Mandatory for Assignment-Complete)
 
-- **3.1 Multi-tool routing**
-  - Agent is created with **multiple tools** (calculator, web search, knowledge base).
-  - Tool descriptions are written so the LLM can:
-    - Choose calculator for numeric questions.
-    - Choose web search for external/current info.
-    - Choose knowledge base for questions about Cameron or included docs.
-  - Optional but ideal: agent can **chain tools** (e.g. RAG → calculator → answer).
+- **3.1 Calculator tool**
+  - Name: `calculator` (or clearly documented equivalent).
+  - Schema: `{ expression: string }` with Zod.
+  - Returns string output and catches errors without throwing.
+  - Must avoid unsafe raw `eval` patterns in production-like code.
 
-- **3.2 Conversation memory**
-  - The backend maintains **message history** across turns.
-  - On each request, the agent receives the **full or truncated conversation history**.
-  - The agent can answer follow-up questions that reference earlier messages (e.g. “And what about per year?”).
-  - Simple truncation of history is acceptable as long as follow-ups work for short conversations.
+- **3.2 Web search tool**
+  - Name: `web_search` (or clearly documented equivalent).
+  - Schema: `{ query: string }`.
+  - Uses Tavily (or equivalent) for current/external information.
+  - Returns summarized results with source titles/URLs suitable for citation.
 
----
-
-### 4. Web UI & UX
-
-- **4.1 Web chat interface**
-  - A chat UI is embedded in the existing CamDigitalProfile site (not just a terminal script).
-  - Users can:
-    - Enter messages.
-    - See responses in a scrollable conversation view.
-  - Ideal: responses **stream in** rather than appearing all at once.
-
-- **4.2 Visual integration**
-  - The chat UI aligns with the site’s design (colors, typography, layout).
-  - Optional bonus: surface agent steps (e.g. “Using calculator tool…”) to showcase agentic reasoning to technical viewers.
+- **3.3 Knowledge base / RAG tool**
+  - Name: `knowledge_base` (or clearly documented equivalent).
+  - Schema: `{ query: string }`.
+  - Performs semantic retrieval over **at least 5 meaningful documents**.
+  - Returns relevant snippets with explicit source attribution.
+  - Handles no-result cases gracefully.
+  - Source corpus can include resume, project docs, and transcript/story `.md` or `.txt` files authored by Cameron.
 
 ---
 
-### 5. Infrastructure, Logging, and Testing
+### 4. Multi-Tool Routing and Memory
 
-- **5.1 JARVIS compliance**
-  - `JARVIS-ACCOUNTABILITY.md` is present and followed.
-  - AI work uses the **full pipeline**: PRD → research → plan → roadmap → implement → verify → test → log → fix → commit.
-
-- **5.2 Repo structure and docs**
-  - `aiDocs/context.md` exists and describes:
-    - Tech stack.
-    - Critical files (including agent backend and UI).
-    - Current focus for the agent project.
-  - Agent-specific context is captured in `AGENT-AGENTIC-CONTEXT.md`.
-  - Additional docs (PRD, MVP, plan, roadmap) live in `aiDocs/` and `ai/roadmaps/` as appropriate.
-
-- **5.3 Scripts and testing**
-  - There is at least one script (or documented command) to:
-    - Start the agent backend.
-    - Run basic tests or health checks.
-  - Tests are run after significant changes (even if they are minimal smoke tests).
-
-- **5.4 Structured logging**
-  - Agent backend logs key events as **structured JSON**:
-    - Incoming user message (redacting sensitive info).
-    - Tool calls (name, arguments, brief result).
-    - Errors and stack traces.
-  - Logs are written to stdout/stderr or a log file in a way that an AI or human can use for debugging.
-
-- **5.5 Security basics**
-  - No API keys or secrets are committed to the repo.
-  - `.env`, `.testEnvVars`, and other secret-bearing files are gitignored.
-  - Calculator and web search tools treat user input as untrusted; no `eval` of raw user strings in production-like code.
+- Agent is initialized with calculator, web search, and knowledge base tools.
+- Tool descriptions clearly steer routing:
+  - calculator for numeric reasoning
+  - web search for current/external information
+  - knowledge base for Cameron-specific knowledge from documents
+- Optional but strong: chain tools when needed (example: RAG retrieval then calculator).
+- Maintains conversation history across turns (full or truncated) so follow-up questions work.
 
 ---
 
-### 6. Documentation & Demo
+### 5. Web UI and UX
 
-- **6.1 README / project docs**
-  - A short README or doc section explains:
-    - What the agent does.
-    - Which tools are available.
-    - How to run the agent locally.
-  - Mentions that this is aligned with the Agentic Development course (Units 7–8).
+- Chat UI is embedded into the existing CamDigitalProfile web experience.
+- Users can submit messages and view assistant responses in a scrollable conversation.
+- Visual style aligns with site aesthetics.
+- Streaming is optional bonus; non-streaming responses are acceptable if UX remains responsive.
+- Optional bonus: expose tool-step hints for technical viewers.
 
-- **6.2 Assignment “done” checklist**
-  - ✅ Calculator tool implemented, tested, and used by the agent.  
-  - ✅ Web search tool implemented, tested, and used by the agent.  
-  - ✅ Knowledge base / RAG tool implemented over at least ~5 meaningful documents.  
-  - ✅ Multi-tool agent routes to the right tool for different questions.  
-  - ✅ Conversation memory supports basic multi-turn chat.  
-  - ✅ Web UI chat is integrated into the CamDigitalProfile site.  
-  - ✅ Logging, secrets handling, and basic tests comply with JARVIS.  
-  - ✅ Context and planning docs (context, PRD, MVP, plan, roadmap) exist and are up to date.
+---
 
-Use this rubric as the authoritative “are we done yet?” document for the AI agent feature.
+### 6. Repo, Process, and Infrastructure Requirements
+
+- **6.1 JARVIS process compliance**
+  - Follow: PRD -> research -> plan -> roadmap -> implement -> verify/test -> log -> fix -> commit.
+  - Keep long-lived docs in `aiDocs/` and support docs in `docs/` per project conventions.
+
+- **6.2 Required documentation artifacts**
+  - `aiDocs/context.md` updated and accurate.
+  - PRD for this feature exists and is current.
+  - MVP doc exists and is current.
+  - Roadmap/plan artifacts exist in agreed locations.
+  - README explains what the agent does and how to run it.
+
+- **6.3 Scripts and verification**
+  - At least one documented command/script to run backend.
+  - At least one documented command/script for smoke/health checks.
+  - Minimal test set proving tool routing and memory behavior.
+
+- **6.4 Structured logging**
+  - Structured JSON logs capture:
+    - incoming user messages (redacted as needed)
+    - tool calls (name, arguments summary, result summary)
+    - errors (with stack traces when available)
+
+- **6.5 Security and secrets hygiene**
+  - No secrets committed.
+  - `.env`, `.testEnvVars`, and related files are gitignored.
+  - Tool inputs treated as untrusted.
+
+---
+
+### 7. Delivery and Evidence
+
+- Repository shows incremental, meaningful progress history (not a single large dump).
+- Deliverables include:
+  - working repo with multi-tool agent and web UI
+  - README
+  - short demo video showing key capabilities
+
+---
+
+### 8. Assignment-Complete Checklist
+
+- [ ] Calculator tool implemented, tested, and used by agent.
+- [ ] Web search tool implemented, tested, and used by agent.
+- [ ] Knowledge base RAG tool implemented over at least 5 meaningful docs with source attribution.
+- [ ] Agent correctly routes between tools for representative prompts.
+- [ ] Conversation memory supports short multi-turn follow-ups.
+- [ ] Web UI chat is integrated into CamDigitalProfile.
+- [ ] Structured logging, secrets handling, and basic verification scripts are in place.
+- [ ] `context.md`, PRD, MVP, and roadmap/plan docs are present and current.
+
+Use this document as the authoritative "are we done yet?" rubric for this project.
 
