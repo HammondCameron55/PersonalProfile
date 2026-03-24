@@ -273,7 +273,18 @@
         sessionId: getSessionId()
       })
     });
-    return response;
+    const rawBody = await response.text();
+    let payload = {};
+    if (rawBody) {
+      try {
+        payload = JSON.parse(rawBody);
+      } catch (_error) {
+        payload = {
+          error: `Backend returned non-JSON response (status ${response.status}). Check that agent-backend is running on http://localhost:8787.`
+        };
+      }
+    }
+    return { response, payload };
   }
 
   if (chatForm && chatInput && chatTranscript && chatStatus && chatSendButton) {
@@ -288,11 +299,20 @@
       chatSendButton.disabled = true;
 
       try {
-        const response = await sendMessage(message);
-        const payload = await response.json();
+        const { response, payload } = await sendMessage(message);
 
         if (!response.ok) {
-          throw new Error(payload.error || 'Request failed.');
+          const parts = [payload.error || `Request failed (HTTP ${response.status}).`];
+          if (payload.code) {
+            parts.push(`Code: ${payload.code}.`);
+          }
+          if (payload.traceId) {
+            parts.push(`Trace: ${payload.traceId}.`);
+          }
+          if (payload.detail) {
+            parts.push(String(payload.detail));
+          }
+          throw new Error(parts.join(' '));
         }
 
         appendMessage('assistant', payload.answer, payload.toolsUsed);

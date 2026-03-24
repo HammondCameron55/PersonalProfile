@@ -4,12 +4,16 @@ dotenv.config({
   path: process.env.DOTENV_PATH || "../.env",
 });
 
+function trimEnv(value) {
+  return typeof value === "string" ? value.trim() : "";
+}
+
 export const config = {
   port: Number(process.env.PORT || 8787),
   allowedOrigin: process.env.ALLOWED_ORIGIN || "*",
-  geminiApiKey: process.env.GEMINI_API_KEY || "",
-  tavilyApiKey: process.env.TAVILY_API_KEY || "",
-  modelName: process.env.GEMINI_MODEL || "gemini-1.5-flash",
+  geminiApiKey: trimEnv(process.env.GEMINI_API_KEY || ""),
+  tavilyApiKey: trimEnv(process.env.TAVILY_API_KEY || ""),
+  modelName: process.env.GEMINI_MODEL || "gemini-2.5-flash-lite",
   modelTimeoutMs: Number(process.env.MODEL_TIMEOUT_MS || 15000),
   maxIterations: Number(process.env.AGENT_MAX_ITERATIONS || 7),
   memoryTurns: Number(process.env.MEMORY_TURNS || 8),

@@ -19,9 +19,10 @@ export function createWebSearchTool({ apiKey, maxResults, depth, toolTracker }) 
       }
 
       try {
+        // @tavily/core expects camelCase option names (searchDepth, maxResults).
         const response = await client.search(query, {
-          max_results: maxResults,
-          search_depth: depth,
+          maxResults,
+          searchDepth: depth,
         });
 
         const lines = (response.results || []).slice(0, maxResults).map((item, index) => {
@@ -35,7 +36,11 @@ export function createWebSearchTool({ apiKey, maxResults, depth, toolTracker }) 
 
         return lines.join("\n\n");
       } catch (error) {
-        return `Web search failed: ${error.message}`;
+        const msg = error?.message || String(error);
+        if (/401|403|Unauthorized|invalid api key|API key/i.test(msg)) {
+          return `Web search failed: Tavily rejected the API key (HTTP auth). Copy a fresh key from https://app.tavily.com/home and set TAVILY_API_KEY in .env with no extra spaces. Raw: ${msg}`;
+        }
+        return `Web search failed: ${msg}`;
       }
     },
     {

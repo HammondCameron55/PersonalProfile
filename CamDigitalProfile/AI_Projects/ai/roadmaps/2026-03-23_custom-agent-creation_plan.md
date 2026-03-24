@@ -93,6 +93,10 @@ Deliver a recruiter-facing, production-quality portfolio agent integrated into C
 - Secrets management:
   - Local/dev: `.testEnvVars` or `.env` (gitignored).
   - Hosted runtime: environment variables configured in the deployment platform.
+- Deployment-specific note for this repo:
+  - Local keys are currently stored in `PersonalProfile/.env`.
+  - AWS Amplify must also define `GEMINI_API_KEY` and `TAVILY_API_KEY` with the same names/values for production parity.
+  - Avoid misspelled variable names (e.g., `TAVILYL_API_KEY`) because backend config expects `TAVILY_API_KEY`.
 - Required variables:
   - `GEMINI_API_KEY`
   - `TAVILY_API_KEY`

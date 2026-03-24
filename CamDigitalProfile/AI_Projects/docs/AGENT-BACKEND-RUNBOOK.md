@@ -7,12 +7,36 @@
 ## Environment Variables
 - `GEMINI_API_KEY` (required for chat completion)
 - `TAVILY_API_KEY` (required for live `web_search`)
+- Secret source of truth for all contributors/agents:
+  - Local development uses repo-root `.env` (`PersonalProfile/.env`).
+  - Hosted deployment uses AWS Amplify environment variables.
+  - Both environments must use the exact same variable names: `GEMINI_API_KEY` and `TAVILY_API_KEY`.
+  - Do not create alternate spellings (for example `TAVILYL_API_KEY`): this causes runtime missing-key failures.
 - Optional:
   - `PORT` (default: `8787`)
+  - `GEMINI_MODEL` (default: `gemini-2.5-flash-lite`; override with any [supported model ID](https://ai.google.dev/gemini-api/docs/models))
   - `AGENT_MAX_ITERATIONS` (default: `7`)
   - `MODEL_TIMEOUT_MS` (default: `15000`)
   - `MEMORY_TURNS` (default: `8`)
   - `ALLOWED_ORIGIN` (default: `*`)
+  - `AGENT_DEBUG_ERRORS=1` — include a short `detail` field in JSON error responses (raw upstream message snippet) for local debugging. Omit in production.
+
+## Chat error responses
+
+On failure, `POST /api/agent/chat` returns JSON such as:
+
+- `error` — human-readable explanation
+- `code` — stable machine code (e.g. `GEMINI_RATE_LIMIT`, `GEMINI_MODEL_NOT_FOUND`, `GEMINI_AUTH`, `GEMINI_TIMEOUT`, `AGENT_FAILED`)
+- `traceId` — correlate with server logs
+- `detail` — optional; only when `AGENT_DEBUG_ERRORS=1` or `NODE_ENV=development`
+
+See [Gemini API rate limits](https://ai.google.dev/gemini-api/docs/rate-limits) and [models](https://ai.google.dev/gemini-api/docs/models) for quota and model IDs.
+
+### Tavily (`web_search`) troubleshooting
+
+- Keys are created in the [Tavily dashboard](https://app.tavily.com/home). Paste into `TAVILY_API_KEY` with no quotes or trailing spaces (Windows `.env` line endings are trimmed by the backend).
+- If chat shows **Tools used: web_search** but the assistant says search failed or “API key” errors, regenerate the key and update `.env`, then restart `npm run dev`.
+- Optional: `TAVILY_SEARCH_DEPTH` = `basic` or `advanced` (default `basic`).
 
 ## Commands
 From `agent-backend/`:

@@ -6,6 +6,7 @@ import { config } from "./config.js";
 import { runAgent } from "./agent.js";
 import { appendToSession, getSessionHistory } from "./memory.js";
 import { logEvent } from "./logger.js";
+import { mapGeminiError } from "./mapGeminiError.js";
 
 const app = express();
 app.use(express.json({ limit: "1mb" }));
@@ -79,15 +80,22 @@ app.post("/api/agent/chat", async (req, res) => {
       traceId,
     });
   } catch (error) {
+    const mapped = mapGeminiError(error);
     logEvent("error", "agent.failed", {
       traceId,
       sessionId,
+      code: mapped.code,
       errorMessage: error.message,
     });
-    return res.status(500).json({
-      error: "Something went wrong while generating a response. Please try again.",
+    const body = {
+      error: mapped.userMessage,
+      code: mapped.code,
       traceId,
-    });
+    };
+    if (mapped.detail) {
+      body.detail = mapped.detail;
+    }
+    return res.status(mapped.httpStatus).json(body);
   }
 });
 

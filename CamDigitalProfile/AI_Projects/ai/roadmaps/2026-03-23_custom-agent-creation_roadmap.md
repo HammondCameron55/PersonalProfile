@@ -11,6 +11,7 @@ _Date: 2026-03-23_
 - No new AWS infrastructure in this phase.
 - RAG corpus ingestion scaling workflow is deferred.
 - User-facing transparency reveals tool names only.
+- Environment parity requirement: keep `GEMINI_API_KEY` and `TAVILY_API_KEY` present in both local `.env` and AWS Amplify env settings (same exact names).
 
 ## Phase 0 — Discovery and Setup
 - [x] Confirm agent backend location and API route within current repo structure.

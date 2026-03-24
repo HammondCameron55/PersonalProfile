@@ -7,9 +7,9 @@ const schema = z.object({
   query: z.string().min(2),
 });
 
-const SOURCE_FILES = [
-  "../CamDigitalProfile/assets/documents/Cameron Hammond - Resume.md",
-  "../CamDigitalProfile/assets/documents/Cameron Hammond - Resume - Sales Engineer.md",
+const DOCUMENTS_DIR = "../CamDigitalProfile/assets/documents";
+
+const STATIC_SOURCE_FILES = [
   "../CamDigitalProfile/AI_Projects/aiDocs/custom-agent-creation-prd.md",
   "../CamDigitalProfile/AI_Projects/docs/AGENT-PROJECT-RUBRIC.md",
   "../CamDigitalProfile/AI_Projects/aiDocs/context.md",
@@ -21,8 +21,17 @@ function scoreSnippet(snippet, queryTokens) {
 }
 
 async function loadCorpus() {
+  const documentsDirAbsolute = path.resolve(process.cwd(), DOCUMENTS_DIR);
+  const documentEntries = await fs.readdir(documentsDirAbsolute, { withFileTypes: true });
+  const transcriptAndResumeFiles = documentEntries
+    .filter((entry) => entry.isFile())
+    .map((entry) => entry.name)
+    .filter((fileName) => fileName.endsWith(".md") || fileName.endsWith(".txt"))
+    .map((fileName) => `${DOCUMENTS_DIR}/${fileName}`);
+
+  const sourceFiles = [...transcriptAndResumeFiles, ...STATIC_SOURCE_FILES];
   const docs = await Promise.all(
-    SOURCE_FILES.map(async (relativePath) => {
+    sourceFiles.map(async (relativePath) => {
       const absolutePath = path.resolve(process.cwd(), relativePath);
       const content = await fs.readFile(absolutePath, "utf8");
       return { source: relativePath.replace("../", ""), content };
