@@ -23,11 +23,12 @@ Core reference docs:
 ### 2. Tech Stack (Current / Intended)
 
 - **Frontend:** Static/HTML site under `CamDigitalProfile/` (e.g. `index.html` and related assets), deployed via AWS.
-- **Backend (planned for agent):**
-  - Node.js / TypeScript (recommended) using **LangChain.js**.
-  - **LLM:** Google Gemini via Gemini API key.
-  - **Tools:** calculator, Tavily web search, and (later) RAG knowledge-base tool.
-- **Infra:** AWS (likely S3/CloudFront for static hosting; Lambda or similar for agent backend).
+- **Backend (implemented — `agent-backend/`):**
+  - Node.js (**ES modules**) with **LangChain.js** `createAgent` ReAct loop (`toolCallLimitMiddleware` uses `AGENT_MAX_ITERATIONS`).
+  - **LLM:** Google Gemini (`ChatGoogleGenerativeAI`) via `GEMINI_API_KEY`.
+  - **Tools:** `calculator` (mathjs), `web_search` (Tavily), `knowledge_base` (Gemini **embeddings** + in-memory cosine similarity over chunked Cameron docs — **not** keyword-only retrieval).
+  - **Logging:** Structured JSON per request plus per-tool `tool.invoked` / `tool.completed` / `tool.failed` (args/result previews, stacks on failure).
+- **Infra:** AWS (likely S3/CloudFront for static hosting; agent backend runbook documents local + Amplify env vars).
 
 If you need to change core tech choices, update this section.
 
@@ -66,20 +67,16 @@ Update this list when new critical files are added.
 
 ### 4. Current Focus
 
-Right now, the active work stream is:
+Submit-ready **Multi-Tool AI Agent** alignment (PRD v1.2 + `AGENT-PROJECT-RUBRIC.md`):
 
-- **Work stream:** Recruiter-facing AI agent and web chat UI for CamDigitalProfile.
-- **Phase:** Early setup / planning.
-- **Key goals for this phase:**
-  - Ensure `aiDocs/`, `ai/`, `.gitignore`, and basic docs (context, changelog, rubric, research) are in place.
-  - Create PRD, MVP, plan, and roadmap for the AI agent feature using the Agentic Development process.
-  - Implement an initial agent backend with:
-    - Calculator tool.
-    - Tavily-based web search tool.
-    - Integration with a Gemini model via LangChain.
-  - Add a minimal but usable chat UI on the site wired to the agent.
+- **Work stream:** Hardening complete — model-driven tool loop (not regex routing), **vector / semantic** `knowledge_base`, per-tool structured logs, tests + root `README.md`.
+- **Phase:** Rubric completion / evidence capture (demo video, runbook demo script).
+- **Pointers:**
+  - Product: `aiDocs/custom-agent-creation-prd.md` (FR-4, FR-7 vector retrieval, FR-9a logging).
+  - Plan/roadmap: `ai/roadmaps/2026-03-24_rubric-completion_agent-hardening_plan.md`, `ai/roadmaps/2026-03-24_rubric-completion_agent-hardening_roadmap.md`.
+  - Run locally: repo root `README.md` and `docs/AGENT-BACKEND-RUNBOOK.md`.
 
-When this focus changes (e.g. to adding RAG, memory, or broader site features), update this section.
+When this focus changes, update this section.
 
 ---
 

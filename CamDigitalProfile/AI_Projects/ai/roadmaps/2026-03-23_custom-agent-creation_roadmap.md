@@ -1,6 +1,8 @@
 # Custom Agent Creation — Roadmap
 _Date: 2026-03-23_
 
+> **Verification note (2026-03-24):** Several tasks here were checked against intent before the backend was audited against PRD v1.2. **ReAct orchestration, vector RAG, and per-tool structured logging** require rework—see `2026-03-24_rubric-completion_agent-hardening_roadmap.md` for the authoritative submit-ready checklist.
+
 ## Links
 - PRD: `CamDigitalProfile/AI_Projects/aiDocs/custom-agent-creation-prd.md`
 - Plan: `CamDigitalProfile/AI_Projects/ai/roadmaps/2026-03-23_custom-agent-creation_plan.md`

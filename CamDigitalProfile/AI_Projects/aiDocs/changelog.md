@@ -6,13 +6,21 @@ Entries are brief “what & why” notes, newest at the top. Keep this concise a
 
 ### 2026-03-24
 
+- **Rubric hardening — ReAct agent, vector RAG, per-tool logs, tests, root README** *(PRD v1.2 / roadmap Phases B–E)*
+  - Replaced heuristic keyword routing in `agent-backend/src/agent.js` with LangChain **`createAgent`** + **`toolCallLimitMiddleware`** (`AGENT_MAX_ITERATIONS`), **`ChatGoogleGenerativeAI`** tool loop, and session history as `HumanMessage` / `AIMessage` turns; LangGraph **`recursionLimit`** scaled with `maxIterations`.
+  - Rebuilt **`knowledge_base`** with **`GoogleGenerativeAIEmbeddings`** (default model **`gemini-embedding-001`**, overridable via **`GEMINI_EMBEDDING_MODEL`**), paragraph chunking plus **`src/rag/vectorRetrieval.js`** fallback for short documents, startup **`warmKnowledgeIndex()`**, and in-memory cosine **top‑k** retrieval (sources + similarity scores; keyword **`scoreSnippet`** removed).
+  - Extended **`logger.js`** with **`tool.invoked`**, **`tool.completed`**, **`tool.failed`** (truncated args/result previews; **`durationMs`**; stacks on failure); **`agent.failed`** includes **`stack`** when present.
+  - Tests: **`npm test`** — vector/cosine fixtures, **`rankChunksForTest`** helper, source guards against heuristic-only **`agent.js`** and keyword-only **`knowledgeBase.js`**, **FakeToolCallingModel** + **`createAgent`** test that exercises the **tool** node; **`npm run test:integration`** — optional live embedding sanity check (**`GEMINI_API_KEY`** required; exits 0 with skip message if unset).
+  - Docs/repo: root **`PersonalProfile/README.md`**, **`aiDocs/context.md`** (submit-ready focus), **`AGENT-BACKEND-RUNBOOK.md`** (**`GEMINI_EMBEDDING_MODEL`**, **`test:integration`**).
+  - **Not in this code drop:** roadmap **Phase F** (manual demo script on running server, ~2‑minute assignment video, ticking **`AGENT-PROJECT-RUBRIC.md` §8** in the doc) — still on the human submission checklist.
+
 - **Tavily client options + env trimming**
   - `web_search` now passes `maxResults` / `searchDepth` (camelCase) to `@tavily/core` as required by the SDK.
   - `GEMINI_API_KEY` and `TAVILY_API_KEY` are trimmed after load to avoid stray whitespace/BOM issues on Windows.
   - Clearer tool error text when Tavily returns auth failures; runbook notes on regenerating the Tavily key.
 
-- **Web search routing + model reply formatting**
-  - Expanded `shouldUseWebSearch` keywords (`search`, `online`, `internet`, etc.) so prompts like “search online …” invoke Tavily instead of skipping tools.
+- **Web search routing + model reply formatting** *(historical; pre–ReAct hardening)*
+  - Expanded `shouldUseWebSearch` keywords (`search`, `online`, `internet`, etc.) so prompts like “search online …” invoke Tavily instead of skipping tools. **Superseded:** same-day ReAct hardening removed **`shouldUse*`** routing; **`web_search`** is selected by the **model** via **`createAgent`**.
   - Normalized Gemini `response.content` (string vs multimodal parts) so empty arrays are not shown as literal `[]` in the chat UI.
 
 - **Default Gemini model set to `gemini-2.5-flash-lite`**

@@ -4,6 +4,7 @@ import cors from "cors";
 import { z } from "zod";
 import { config } from "./config.js";
 import { runAgent } from "./agent.js";
+import { warmKnowledgeIndex } from "./tools/knowledgeBase.js";
 import { appendToSession, getSessionHistory } from "./memory.js";
 import { logEvent } from "./logger.js";
 import { mapGeminiError } from "./mapGeminiError.js";
@@ -63,6 +64,7 @@ app.post("/api/agent/chat", async (req, res) => {
     const result = await runAgent({
       message,
       history,
+      traceId,
     });
 
     appendToSession(sessionId, message, result.answer, config.memoryTurns);
@@ -103,5 +105,11 @@ app.listen(config.port, () => {
   logEvent("info", "server.started", {
     port: config.port,
     allowedOrigin: config.allowedOrigin,
+  });
+  warmKnowledgeIndex().catch((error) => {
+    logEvent("error", "knowledge_index.warm_failed", {
+      errorMessage: error.message,
+      stack: error.stack,
+    });
   });
 });

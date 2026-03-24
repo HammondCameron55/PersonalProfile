@@ -15,6 +15,7 @@
 - Optional:
   - `PORT` (default: `8787`)
   - `GEMINI_MODEL` (default: `gemini-2.5-flash-lite`; override with any [supported model ID](https://ai.google.dev/gemini-api/docs/models))
+  - `GEMINI_EMBEDDING_MODEL` (default: `gemini-embedding-001`; used to build the in-memory vector index for `knowledge_base` at server startup)
   - `AGENT_MAX_ITERATIONS` (default: `7`)
   - `MODEL_TIMEOUT_MS` (default: `15000`)
   - `MEMORY_TURNS` (default: `8`)
@@ -47,6 +48,8 @@ From `agent-backend/`:
   - `npm run dev`
 - Run test checks:
   - `npm test`
+  - Optional live embedding check (requires `GEMINI_API_KEY`):
+    - `npm run test:integration` — skips with a message if the key is missing.
 - Run health smoke check:
   - `npm run smoke`
 

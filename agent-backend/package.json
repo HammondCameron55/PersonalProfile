@@ -8,6 +8,7 @@
     "dev": "node src/server.js",
     "start": "node src/server.js",
     "test": "node tests/run-tests.js",
+    "test:integration": "node tests/integration-gemini.test.js",
     "smoke": "node scripts/smoke-check.js"
   },
   "dependencies": {

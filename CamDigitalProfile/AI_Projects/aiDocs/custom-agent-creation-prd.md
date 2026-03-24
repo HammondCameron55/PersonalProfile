@@ -1,8 +1,8 @@
 # Product Requirements Document — Custom Agent Creation for CamDigitalProfile
 
-**Version:** 1.1  
+**Version:** 1.2  
 **Owner:** Cameron Hammond  
-**Date:** 2026-03-23  
+**Date:** 2026-03-24  
 
 ---
 
@@ -103,8 +103,11 @@ Future phases may still deepen RAG quality and memory sophistication, but baseli
 
 **FR-4**: The agent must be configured as a **tool-using, ReAct-style agent**:
 
-- Uses LangChain agent/graph primitives (e.g., `createAgent` / `create_tool_calling_agent` or equivalent).
+- Uses LangChain agent/graph primitives (e.g., `createAgent` / LangGraph tool-calling flows / `create_tool_calling_agent` or equivalent) such that the **model selects and invokes tools** over one or more turns.
 - Reasoning loop: Think → Act (tool) → Observe → Repeat, bounded by an iteration/recursion limit.
+- **Non-compliant shortcut (explicit):** Implementations that **only** pre-classify the user message (e.g., regex or keyword routing) and run **at most one** tool before a single final `invoke` **do not** satisfy FR-4, even if LangChain `tool()` wrappers are used—because the LLM is not the primary router in a multi-step tool loop.
+
+**FR-4a (course alignment):** Behavior must match the **Multi-Tool AI Agent** assignment expectation: ReAct-style **LangChain.js** orchestration, not a custom router pretending to be an agent.
 
 ### 3.3 Tools
 
@@ -133,6 +136,8 @@ Future phases may still deepen RAG quality and memory sophistication, but baseli
 - The source corpus must include at least 5 meaningful documents (resume, portfolio docs, and/or transcript/story `.md`/`.txt` files).
 - Tool output must include retrieved snippets plus source attribution.
 - No-results behavior must return a clear "no relevant documents found" style response.
+- **Semantic / vector retrieval (required):** Retrieval must use **embedding-based vector search** (e.g., LangChain `MemoryVectorStore` + Gemini or other embedding model, or equivalent) over chunked document text—not token-overlap or keyword-only scoring. The class rubric calls this out as **vector search**; `AGENT-PROJECT-RUBRIC.md` calls for **semantic retrieval**. Keyword/BM25-only ranking may be added later as an enhancement but **does not** alone satisfy FR-7.
+- **Persistence (baseline vs stretch):** In-memory vector index rebuilt on process start satisfies assignment **baseline**; optional stretch is a persisted store that survives restarts (see rubric stretch goals).
 
 ### 3.4 Conversation Memory
 
@@ -147,8 +152,10 @@ Future phases may still deepen RAG quality and memory sophistication, but baseli
 **FR-9**: The backend must emit **structured logs** for:
 
 - Incoming user messages (with PII minimized and no secrets).
-- Tool calls (tool name, arguments summary, result summary).
-- Errors, including stack traces where applicable.
+- **Per tool invocation** (not only an aggregate list on completion): structured events that include at minimum **tool name**, **arguments summary** (e.g., truncated expression/query string), and **result summary** (e.g., length, one-line preview, or “success/failure”), without logging full raw secrets or excessive PII.
+- Errors, including **stack traces when `error.stack` is available** (and safe to emit server-side), in addition to a user-safe message.
+
+**FR-9a (verification):** A reviewer reading JSON logs for one chat turn must be able to see **which tools ran**, **what they were asked**, and **whether they succeeded**, without cross-referencing application code.
 
 **FR-10**: User-visible errors must be graceful:
 
@@ -236,6 +243,7 @@ Future phases may still deepen RAG quality and memory sophistication, but baseli
   - web_search queries
   - knowledge_base queries (required by assignment-complete phase)
   - at least one multi-turn memory follow-up case
+- Automated or scripted checks must assert **LLM-driven tool selection** where feasible (e.g., integration tests with mocked model still assert the agent graph invokes the expected tool nodes), not merely that prompt strings exist in a test file.
 
 ---
 
@@ -272,7 +280,11 @@ Future phases may still deepen RAG quality and memory sophistication, but baseli
 - Which document ingestion workflow to use for transcript/story `.md` and `.txt` files as the knowledge corpus grows.
 - How deeply to expose implementation details to users (e.g., whether to show which tools are being used step-by-step).
 
-These items should be addressed and refined in the **Plan** and **Roadmap** documents that follow this PRD.
+### 7.3 Post-implementation gap analysis (2026-03-24)
+
+**Root cause of rubric drift:** The PRD and 2026-03-23 plan/roadmap **already specified** ReAct orchestration, RAG with attribution, and detailed structured logging. The gap was **execution and verification**: the backend shipped a faster heuristic router + keyword retrieval, and roadmap checkboxes were marked complete without a hard gate that the running code uses LangChain’s agent loop and embedding-based retrieval. **FR-7** previously did not spell out “vector/semantic,” which allowed keyword retrieval to feel “done.” **FR-4** did not explicitly forbid heuristic-only routing; that is now clarified in v1.2.
+
+These items should be addressed and refined in the **Plan** and **Roadmap** documents that follow this PRD (see `2026-03-24_rubric-completion_agent-hardening_*` artifacts).
 
 ---
 

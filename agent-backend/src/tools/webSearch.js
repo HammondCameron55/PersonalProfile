@@ -1,12 +1,13 @@
 import { tavily } from "@tavily/core";
 import { tool } from "langchain";
 import { z } from "zod";
+import { logToolComplete, logToolFailure, logToolInvoked } from "../logger.js";
 
 const schema = z.object({
   query: z.string().min(2),
 });
 
-export function createWebSearchTool({ apiKey, maxResults, depth, toolTracker }) {
+export function createWebSearchTool({ apiKey, maxResults, depth, toolTracker, traceId }) {
   const client = tavily({
     apiKey,
   });
@@ -14,12 +15,17 @@ export function createWebSearchTool({ apiKey, maxResults, depth, toolTracker }) 
   return tool(
     async ({ query }) => {
       toolTracker("web_search");
+      const argsSummary = JSON.stringify({ query });
+      logToolInvoked(traceId, "web_search", argsSummary);
+      const started = Date.now();
+
       if (!apiKey) {
-        return "Web search is unavailable because TAVILY_API_KEY is not configured.";
+        const msg = "Web search is unavailable because TAVILY_API_KEY is not configured.";
+        logToolComplete(traceId, "web_search", argsSummary, msg, false, Date.now() - started);
+        return msg;
       }
 
       try {
-        // @tavily/core expects camelCase option names (searchDepth, maxResults).
         const response = await client.search(query, {
           maxResults,
           searchDepth: depth,
@@ -31,12 +37,17 @@ export function createWebSearchTool({ apiKey, maxResults, depth, toolTracker }) 
         });
 
         if (!lines.length) {
-          return "No web results were found for that query.";
+          const msg = "No web results were found for that query.";
+          logToolComplete(traceId, "web_search", argsSummary, msg, true, Date.now() - started);
+          return msg;
         }
 
-        return lines.join("\n\n");
+        const body = lines.join("\n\n");
+        logToolComplete(traceId, "web_search", argsSummary, body, true, Date.now() - started);
+        return body;
       } catch (error) {
         const msg = error?.message || String(error);
+        logToolFailure(traceId, "web_search", argsSummary, error, Date.now() - started);
         if (/401|403|Unauthorized|invalid api key|API key/i.test(msg)) {
           return `Web search failed: Tavily rejected the API key (HTTP auth). Copy a fresh key from https://app.tavily.com/home and set TAVILY_API_KEY in .env with no extra spaces. Raw: ${msg}`;
         }
