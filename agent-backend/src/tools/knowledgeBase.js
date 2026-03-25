@@ -5,7 +5,8 @@ import { GoogleGenerativeAIEmbeddings } from "@langchain/google-genai";
 import { z } from "zod";
 import { config } from "../config.js";
 import { chunkText, topKByEmbedding } from "../rag/vectorRetrieval.js";
-import { logToolFailure, logToolComplete, logToolInvoked } from "../logger.js";
+import { logEvent, logToolFailure, logToolComplete, logToolInvoked } from "../logger.js";
+import { isGeminiEmbeddingFallbackError } from "../mapGeminiError.js";
 
 const schema = z.object({
   query: z.string().min(2),
@@ -87,18 +88,20 @@ async function loadCorpus() {
   return docs;
 }
 
-/** @type {Promise<{ entries: { embedding: number[]; text: string; source: string }[] } | null> | null} */
+/** @type {Promise<{ entries: { embedding: number[]; text: string; source: string }[]; embeddingModel: string } | null> | null} */
 let indexPromise = null;
 
-async function buildVectorIndex() {
+function makeEmbeddings(modelName) {
+  return new GoogleGenerativeAIEmbeddings({
+    apiKey: config.geminiApiKey,
+    model: modelName,
+  });
+}
+
+async function buildVectorIndex({ startIndex = 0 } = {}) {
   if (!config.geminiApiKey) {
     return null;
   }
-
-  const embeddings = new GoogleGenerativeAIEmbeddings({
-    apiKey: config.geminiApiKey,
-    model: config.embeddingModel,
-  });
 
   const corpus = await loadCorpus();
   const rows = [];
@@ -110,22 +113,54 @@ async function buildVectorIndex() {
   }
 
   if (!rows.length) {
-    return { entries: [] };
+    return { entries: [], embeddingModel: config.embeddingModelChain[0] || config.embeddingModel };
   }
 
   const texts = rows.map((r) => r.text);
-  const vectors = await embeddings.embedDocuments(texts);
-  const entries = rows.map((row, i) => ({
-    embedding: vectors[i] || [],
-    text: row.text,
-    source: row.source,
-  }));
+  const chain = config.embeddingModelChain;
+  let lastError;
 
-  return { entries: entries.filter((e) => e.embedding.length) };
+  for (let i = startIndex; i < chain.length; i++) {
+    const modelName = chain[i];
+    try {
+      const embeddings = makeEmbeddings(modelName);
+      const vectors = await embeddings.embedDocuments(texts);
+      const entries = rows.map((row, j) => ({
+        embedding: vectors[j] || [],
+        text: row.text,
+        source: row.source,
+      }));
+      return {
+        entries: entries.filter((e) => e.embedding.length),
+        embeddingModel: modelName,
+      };
+    } catch (err) {
+      lastError = err;
+      const hasNext = i < chain.length - 1;
+      if (!isGeminiEmbeddingFallbackError(err) || !hasNext) {
+        throw err;
+      }
+      logEvent("warn", "knowledge_index.embedding_model_fallback", {
+        fromModel: modelName,
+        toModel: chain[i + 1],
+        errorPreview: String(err?.message || err).slice(0, 200),
+      });
+    }
+  }
+
+  throw lastError;
 }
 
 export function warmKnowledgeIndex() {
-  indexPromise = buildVectorIndex().catch((err) => {
+  indexPromise = buildVectorIndex({ startIndex: 0 }).catch((err) => {
+    indexPromise = null;
+    throw err;
+  });
+  return indexPromise;
+}
+
+function rebuildKnowledgeIndexFromChainIndex(startIndex) {
+  indexPromise = buildVectorIndex({ startIndex }).catch((err) => {
     indexPromise = null;
     throw err;
   });
@@ -158,18 +193,42 @@ export function createKnowledgeBaseTool({ toolTracker, traceId }) {
           return msg;
         }
 
-        const index = await ensureIndex();
+        let index = await ensureIndex();
         if (!index || !index.entries.length) {
           const msg = "Knowledge base index is not ready yet.";
           logToolComplete(traceId, "knowledge_base", argsSummary, msg, false, Date.now() - started);
           return msg;
         }
 
-        const embeddings = new GoogleGenerativeAIEmbeddings({
-          apiKey: config.geminiApiKey,
-          model: config.embeddingModel,
-        });
-        const qVec = await embeddings.embedQuery(query);
+        const chain = config.embeddingModelChain;
+        let modelName = index.embeddingModel || config.embeddingModel;
+        let modelIdx = chain.indexOf(modelName);
+        if (modelIdx < 0) modelIdx = 0;
+
+        let qVec;
+        try {
+          qVec = await makeEmbeddings(modelName).embedQuery(query);
+        } catch (embedErr) {
+          if (!isGeminiEmbeddingFallbackError(embedErr)) {
+            throw embedErr;
+          }
+          const nextStart = modelIdx + 1;
+          if (nextStart >= chain.length) {
+            throw embedErr;
+          }
+          logEvent("warn", "knowledge_base.query_embedding_rebuild", {
+            traceId,
+            fromModel: modelName,
+            toModel: chain[nextStart],
+            errorPreview: String(embedErr?.message || embedErr).slice(0, 200),
+          });
+          index = await rebuildKnowledgeIndexFromChainIndex(nextStart);
+          if (!index || !index.entries.length) {
+            throw embedErr;
+          }
+          modelName = index.embeddingModel;
+          qVec = await makeEmbeddings(modelName).embedQuery(query);
+        }
         const hits = mergePinnedAndGlobalHits(
           qVec,
           index.entries,

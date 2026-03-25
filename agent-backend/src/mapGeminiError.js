@@ -6,10 +6,49 @@
 const DEBUG_ERRORS =
   process.env.AGENT_DEBUG_ERRORS === "1" || process.env.NODE_ENV === "development";
 
+/** True when retrying the same request on another chat model may help (shared quota/rate errors). */
+export function isGeminiRateLimitOrQuotaError(err) {
+  if (err == null) return false;
+  const status = err.status ?? err.response?.status ?? err.lc_kwargs?.status;
+  if (status === 429) return true;
+  const msg = String(err.message || err || "");
+  if (
+    /429|Too Many Requests|quota exceeded|rate limit|RESOURCE_EXHAUSTED|exceeded your current quota|Quota exceeded/i.test(
+      msg,
+    )
+  ) {
+    return true;
+  }
+  const cause = err.cause;
+  if (cause && cause !== err) return isGeminiRateLimitOrQuotaError(cause);
+  return false;
+}
+
+/**
+ * When Embedding 1 is exhausted or unavailable, trying Embedding 2 may succeed (separate quota / model).
+ * Do not use for auth errors (same key would fail on both).
+ */
+export function isGeminiEmbeddingFallbackError(err) {
+  if (err == null) return false;
+  const msg = String(err.message || err || "");
+  if (/401|403|API key|invalid.*key|permission denied/i.test(msg)) return false;
+  if (isGeminiRateLimitOrQuotaError(err)) return true;
+  if (
+    /404|not found for API version|is not supported for.*embed|embedContent|generateContent|models\//i.test(
+      msg,
+    )
+  ) {
+    return true;
+  }
+  const cause = err.cause;
+  if (cause && cause !== err) return isGeminiEmbeddingFallbackError(cause);
+  return false;
+}
+
 export function mapGeminiError(err) {
   const msg = String(err?.message || err || "");
 
-  if (/429|Too Many Requests|quota exceeded|rate limit/i.test(msg)) {
+  if (isGeminiRateLimitOrQuotaError(err)) {
     return {
       httpStatus: 429,
       code: "GEMINI_RATE_LIMIT",

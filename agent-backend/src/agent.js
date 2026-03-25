@@ -5,6 +5,8 @@ import { config } from "./config.js";
 import { createCalculatorTool } from "./tools/calculator.js";
 import { createWebSearchTool } from "./tools/webSearch.js";
 import { createKnowledgeBaseTool } from "./tools/knowledgeBase.js";
+import { logEvent } from "./logger.js";
+import { isGeminiRateLimitOrQuotaError } from "./mapGeminiError.js";
 
 const systemPrompt = `You are Cameron Hammond's portfolio AI agent.
 You are concise, professional, and helpful to recruiters and technical interviewers.
@@ -65,12 +67,12 @@ function finalAssistantText(messages) {
   return "";
 }
 
-export async function runAgent({ message, history, traceId }) {
+async function runAgentOnce({ message, history, traceId, modelName }) {
   const toolUsage = new Set();
   const toolTracker = (toolName) => toolUsage.add(toolName);
 
   const model = new ChatGoogleGenerativeAI({
-    model: config.modelName,
+    model: modelName,
     apiKey: config.geminiApiKey,
     timeout: config.modelTimeoutMs,
   });
@@ -115,5 +117,41 @@ export async function runAgent({ message, history, traceId }) {
   return {
     answer,
     toolsUsed: [...toolUsage],
+    modelUsed: modelName,
   };
+}
+
+export async function runAgent({ message, history, traceId }) {
+  const chain = config.chatModelChain;
+  let lastError;
+
+  for (let i = 0; i < chain.length; i++) {
+    const modelName = chain[i];
+    try {
+      const out = await runAgentOnce({ message, history, traceId, modelName });
+      if (i > 0) {
+        logEvent("info", "agent.model_fallback_success", {
+          traceId,
+          modelUsed: modelName,
+          attemptIndex: i,
+        });
+      }
+      return { answer: out.answer, toolsUsed: out.toolsUsed };
+    } catch (err) {
+      lastError = err;
+      const hasNext = i < chain.length - 1;
+      if (!isGeminiRateLimitOrQuotaError(err) || !hasNext) {
+        throw err;
+      }
+      const nextModel = chain[i + 1];
+      logEvent("warn", "agent.model_fallback_retry", {
+        traceId,
+        fromModel: modelName,
+        toModel: nextModel,
+        errorPreview: String(err?.message || err).slice(0, 200),
+      });
+    }
+  }
+
+  throw lastError;
 }
