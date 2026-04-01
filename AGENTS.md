@@ -40,7 +40,6 @@ TAVILY_API_KEY=<value>
 
 - The `.env` file must be at the **repo root** (not inside `agent-backend/`). The config reads `../.env` relative to its own directory.
 - The knowledge-base embedding index warms asynchronously on server startup. If a `knowledge_base` query arrives before warming completes, it may return fewer results.
-- Calculator tool queries may return `"I could not produce a response."` even when the tool executes correctly — this is an existing behavior in the agent's answer extraction, not an environment issue.
 - There is no linter configured in this project (no ESLint, Prettier, or similar).
 - There is no build step — the backend runs directly via `node src/server.js` and the frontend is plain HTML.
 - See `README.md` and `CamDigitalProfile/AI_Projects/docs/AGENT-BACKEND-RUNBOOK.md` for full env var reference and API contracts.
