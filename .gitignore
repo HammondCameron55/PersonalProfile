@@ -1,6 +1,5 @@
-CamDigitalProfile/AI_Projects/ai/  # Working AI space for agent project — DO NOT COMMIT
-claude.md        # Personal tool config
-.cursorrules     # Personal Cursor config
+#claude.md        # Personal tool config
+#.cursorrules     # Personal Cursor config
 .testEnvVars     # Test secrets — NEVER commit
 node_modules/
 venv/
