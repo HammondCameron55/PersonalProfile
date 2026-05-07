@@ -7,7 +7,12 @@ applications:
       phases:
         build:
           commands:
-            - echo "Static site; no build step required."
+            - echo "Publish static site; optional agent URL injection."
+            - |
+                set -e
+                APPROOT="${AMPLIFY_MONOREPO_APP_ROOT:-CamDigitalProfile}"
+                cd "$APPROOT"
+                python3 scripts/inject-agent-endpoint.py
       artifacts:
         baseDirectory: .
         files:
