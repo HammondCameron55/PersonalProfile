@@ -34,7 +34,22 @@ From `agent-backend/`:
 
 ## Use the site chat
 
-Open **`CamDigitalProfile/index.html`** in a browser (e.g. Live Server). The UI posts to `http://localhost:8787/api/agent/chat` (configurable via `window.AGENT_CHAT_ENDPOINT` in the HTML).
+Open **`CamDigitalProfile/index.html`** in a browser (e.g. Live Server). The chat UI targets **`http://localhost:8787/api/agent/chat`** when the hostname is `localhost` / `127.0.0.1`; on any other host it defaults to **same-origin** `/api/agent/chat` (see `_redirects.example` and README for production).
+
+## Production chat (fixing “Failed to fetch”)
+
+Browsers block or fail requests when an **HTTPS** portfolio page tries to call **`http://localhost:8787`** (wrong host, mixed content, or unreachable). The UI now picks:
+
+- **Local dev:** `http://localhost:8787/api/agent/chat`
+- **Deployed site:** `<origin>/api/agent/chat` unless you set `window.AGENT_CHAT_ENDPOINT` or `<meta name="cam-agent-chat-endpoint" content="https://...">`
+
+**Recommended:** Add Amplify Hosting **rewrites** (or a `CamDigitalProfile/_redirects` file Amplify honors) so **`/api/agent/chat`** and **`/api/agent/health`** on your **site origin** (e.g. `https://cameronhammonddigitalportfolio.com`) proxy to your **serverless agent** URL (Lambda function URL, API Gateway, or Amplify Gen-2 function route). Without this, the browser calls your static host at `/api/agent/chat`, gets **404**, or fails the request. See `CamDigitalProfile/_redirects.example` for the pattern.
+
+If the frontend and agent live in the **same Amplify app**, add rules in **Amplify Console → Hosting → Rewrites and redirects** (or keep `_redirects` in the published root) so those paths forward to the deployed function’s HTTPS URL.
+
+Set backend **`ALLOWED_ORIGIN`** to the **exact** origin(s) visitors use (apex and `www` differ). Example:
+
+`ALLOWED_ORIGIN=https://cameronhammonddigitalportfolio.com,https://www.cameronhammonddigitalportfolio.com`
 
 ## Documentation
 

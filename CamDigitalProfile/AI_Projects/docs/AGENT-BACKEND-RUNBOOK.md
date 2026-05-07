@@ -14,12 +14,12 @@
   - Do not create alternate spellings (for example `TAVILYL_API_KEY`): this causes runtime missing-key failures.
 - Optional:
   - `PORT` (default: `8787`)
-  - `GEMINI_MODEL` (default: `gemini-2.5-flash-lite`; override with any [supported model ID](https://ai.google.dev/gemini-api/docs/models))
+  - `GEMINI_MODEL` (default: `gemini-2.0-flash`; override with any [supported model ID](https://ai.google.dev/gemini-api/docs/models))
   - `GEMINI_EMBEDDING_MODEL` (default: `gemini-embedding-001`; used to build the in-memory vector index for `knowledge_base` at server startup)
   - `AGENT_MAX_ITERATIONS` (default: `7`)
   - `MODEL_TIMEOUT_MS` (default: `15000`)
   - `MEMORY_TURNS` (default: `8`)
-  - `ALLOWED_ORIGIN` (default: `*`)
+  - `ALLOWED_ORIGIN` (default `*`) — CORS. Use one origin or a **comma-separated** list, for example `https://www.cameronhammonddigitalportfolio.com,https://main.d123.amplifyapp.com`.
   - `AGENT_DEBUG_ERRORS=1` — include a short `detail` field in JSON error responses (raw upstream message snippet) for local debugging. Omit in production.
 
 ## Chat error responses
@@ -77,5 +77,5 @@ From `agent-backend/`:
 8. `What are Cameron's current career goals?`
 
 ## Notes
-- The chat UI sends requests to `/api/agent/chat` and persists `sessionId` in browser `sessionStorage`.
+- The chat UI resolves `POST /api/agent/chat` automatically: **localhost** uses `http://localhost:8787/api/agent/chat`; **production** defaults to **same-origin** `https://<your-domain>/api/agent/chat` (configure Amplify rewrites to your agent backend). Override with `meta[name="cam-agent-chat-endpoint"]` or `window.AGENT_CHAT_ENDPOINT` before `main.js` loads.
 - UI transparency intentionally exposes tool names only (no chain-of-thought).

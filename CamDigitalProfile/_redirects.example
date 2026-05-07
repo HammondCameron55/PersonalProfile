@@ -1,0 +1,8 @@
+# AWS Amplify Hosting (Custom redirects and rewrites)
+# Copy this file to `_redirects` in CamDigitalProfile/ and replace BACKEND_HOST with your
+# deployed agent-backend base URL (no trailing slash), e.g. https://abc123.execute-api.us-east-1.amazonaws.com/prod
+#
+# Same-origin /api/agent/* keeps HTTPS pages from calling http://localhost and avoids mixed-content blocks.
+#
+# /api/agent/chat  https://BACKEND_HOST/api/agent/chat  200
+# /api/agent/health  https://BACKEND_HOST/api/agent/health  200

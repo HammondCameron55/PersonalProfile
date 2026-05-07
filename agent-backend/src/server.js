@@ -13,7 +13,8 @@ const app = express();
 app.use(express.json({ limit: "1mb" }));
 app.use(
   cors({
-    origin: config.allowedOrigin === "*" ? true : config.allowedOrigin,
+    origin:
+      config.allowedOrigins === "*" ? true : config.allowedOrigins,
   }),
 );
 
@@ -104,7 +105,7 @@ app.post("/api/agent/chat", async (req, res) => {
 app.listen(config.port, () => {
   logEvent("info", "server.started", {
     port: config.port,
-    allowedOrigin: config.allowedOrigin,
+    allowedOrigins: config.allowedOrigins,
   });
   warmKnowledgeIndex().catch((error) => {
     logEvent("error", "knowledge_index.warm_failed", {
