@@ -4,8 +4,10 @@
   <head>
     <meta charset="utf-8" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <!-- Optional: full URL to POST /api/agent/chat when not using same-origin + Amplify rewrite -->
+    <meta name="cam-agent-chat-endpoint" content="" />
     <title>Cameron Hammond</title>
-    <meta content="Cameron Hammond – Cloud & Security Engineer, Sales Engineer, Solutions Architect. BYU MISM, AWS & FinOps certified. Summer 2026 internship." name="description" />
+    <meta content="Cameron Hammond – Cloud & Security Engineer, Sales Engineer, Solutions Architect. BYU MISM, AWS & FinOps certified. Lucid Software Sales Engineering intern (Summer 2026)." name="description" />
     <meta content="Cameron Hammond, cloud engineer, DevOps, AWS, cybersecurity, Sales Engineer, Solutions Architect, internship, BYU MISM" name="keywords" />
 
     <!-- Favicons -->
@@ -101,6 +103,11 @@
           <li>
             <a href="index.html#resume">
               <i class="bi bi-file-earmark-text navicon"></i>Resume
+            </a>
+          </li>
+          <li>
+            <a href="get-to-know-me.html">
+              <i class="bi bi-compass navicon"></i>Get to know me
             </a>
           </li>
           <li class="dropdown">
@@ -350,8 +357,8 @@
         <div class="container section-title" data-aos="fade-up">
           <h2>Resume</h2>
           <p>
-            Currently seeking a Summer 2026 internship (May - August availability).
-            Open to roles in cloud engineering, platform engineering, sales engineering, and solutions architecture.
+            Sales Engineering intern at Lucid Software (May–August 2026). Graduating MISM December 2026; open to full-time roles in
+            cloud / platform engineering, sales engineering, and solutions architecture.
           </p>
           <p class="mb-3">
             <a href="assets/documents/Cameron Hammond - Resume.pdf" class="btn btn-outline-primary btn-sm me-2" download>Download resume – Technical &amp; cloud roles (PDF)</a>
@@ -377,6 +384,13 @@
                   <li>
                     Association of Information Systems (Mentor for 8 Junior
                     Students)
+                  </li>
+                  <li>
+                    <strong>Agentic AI Development</strong> — multi-tool LangChain agents, RAG, evaluation, and production-minded patterns
+                    (<a href="https://d1dtpagvh0qhqn.cloudfront.net/" rel="noopener noreferrer" target="_blank">course materials</a>)
+                  </li>
+                  <li>
+                    <strong>Sales Engineering</strong> — consultative discovery, ROI and value framing, demos &amp; PoCs, stakeholder alignment, and objection handling
                   </li>
                 </ul>
               </div>
@@ -422,6 +436,7 @@
                     Built with S3, Lambda, API Gateway, DynamoDB, Terraform
                   </li>
                   <li>Simulated live restaurant data streaming via DynamoDB</li>
+                  <li>Embedded portfolio AI agent (LangChain.js, Gemini, tools) with a separate Node backend for recruiter Q&amp;A</li>
                 </ul>
               </div>
               <div class="resume-item">
@@ -435,6 +450,16 @@
 
             <div class="col-lg-6" data-aos="fade-up" data-aos-delay="200">
               <h3 class="resume-title">Experience</h3>
+
+              <div class="resume-item">
+                <h4>Sales Engineer – Intern</h4>
+                <h5>Starts May 18, 2026 – August 2026</h5>
+                <p><em>Lucid Software</em></p>
+                <ul>
+                  <li>Supporting customer-facing technical evaluations, demos, and solution design in a collaborative sales engineering environment</li>
+                  <li>Translating product capabilities into business outcomes for prospects and customers</li>
+                </ul>
+              </div>
 
               <div class="resume-item">
                 <h4>Platform Engineer Intern</h4>
@@ -534,10 +559,7 @@
     <script src="assets/vendor/isotope-layout/isotope.pkgd.min.js"></script>
     <script src="assets/vendor/swiper/swiper-bundle.min.js"></script>
 
-    <script>
-      window.AGENT_CHAT_ENDPOINT =
-        window.AGENT_CHAT_ENDPOINT || "http://localhost:8787/api/agent/chat";
-    </script>
+    <!-- AGENT_CHAT_ENDPOINT: optional build-time override. Otherwise main.js picks localhost vs same-origin /api/agent/chat. -->
 
     <!-- Main JS File -->
     <script src="assets/js/main.js"></script>

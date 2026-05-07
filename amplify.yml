@@ -1,0 +1,13 @@
+# AWS Amplify — static site root (adjust appRoot if your Amplify app uses a subfolder).
+version: 1
+frontend:
+  phases:
+    build:
+      commands:
+        - echo "Static site; no build step required."
+  artifacts:
+    baseDirectory: CamDigitalProfile
+    files:
+      - "**/*"
+  cache:
+    paths: []

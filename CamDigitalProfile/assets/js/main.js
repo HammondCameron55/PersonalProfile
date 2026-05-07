@@ -236,6 +236,25 @@
   const chatSendButton = document.querySelector('#agent-chat-send');
   const sessionStorageKey = 'cam_agent_session_id';
 
+  function resolveAgentChatEndpoint() {
+    if (typeof window.AGENT_CHAT_ENDPOINT === 'string' && window.AGENT_CHAT_ENDPOINT.trim()) {
+      return window.AGENT_CHAT_ENDPOINT.trim();
+    }
+    const meta = document.querySelector('meta[name="cam-agent-chat-endpoint"]');
+    if (meta) {
+      const fromMeta = (meta.getAttribute('content') || '').trim();
+      if (fromMeta) return fromMeta;
+    }
+    if (window.location.protocol === 'file:') {
+      return 'http://localhost:8787/api/agent/chat';
+    }
+    const host = window.location.hostname;
+    if (host === 'localhost' || host === '127.0.0.1') {
+      return 'http://localhost:8787/api/agent/chat';
+    }
+    return `${window.location.origin.replace(/\/$/, '')}/api/agent/chat`;
+  }
+
   function getSessionId() {
     let value = sessionStorage.getItem(sessionStorageKey);
     if (!value) {
@@ -262,7 +281,7 @@
   }
 
   async function sendMessage(message) {
-    const endpoint = window.AGENT_CHAT_ENDPOINT || '/api/agent/chat';
+    const endpoint = resolveAgentChatEndpoint();
     const response = await fetch(endpoint, {
       method: 'POST',
       headers: {
@@ -318,7 +337,12 @@
         appendMessage('assistant', payload.answer, payload.toolsUsed);
         chatStatus.textContent = '';
       } catch (error) {
-        appendMessage('assistant', `Sorry, I hit an error: ${error.message}`);
+        let detail = error && error.message ? error.message : String(error);
+        if (/Failed to fetch|NetworkError|Load failed|network error/i.test(detail)) {
+          detail =
+            'Could not reach the agent API (network or browser block). On the live site, use HTTPS same-origin /api/agent/chat with an Amplify rewrite to your backend, or set meta cam-agent-chat-endpoint / window.AGENT_CHAT_ENDPOINT to your API URL. See repo README.';
+        }
+        appendMessage('assistant', `Sorry, I hit an error: ${detail}`);
         chatStatus.textContent = 'Request failed. Please try again.';
       } finally {
         chatSendButton.disabled = false;

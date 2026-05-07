@@ -12,6 +12,8 @@ Brigham Young University – Marriott School of Business, Provo, UT
 * GPA **3.94**/**4.00**  
 * Full-Tuition Academic Scholarship, Marriott School **Dean’s List** Academic Award Recipient  
 * Association of Information Systems (**AIS**), Mentorship Program (Mentoring 8 Junior IS students) 
+* **Agentic AI Development** — multi-tool agents, retrieval (RAG), evaluation, and production-minded patterns; course materials: [https://d1dtpagvh0qhqn.cloudfront.net/](https://d1dtpagvh0qhqn.cloudfront.net/)
+* **Sales Engineering (coursework)** — consultative discovery (situational through strategic), active listening and EQ, meeting facilitation, ROI/value translation, stakeholder alignment, objection handling, PoCs and outcome-led demos, account growth, and AI-assisted sales productivity
 
 ---
 
@@ -20,11 +22,18 @@ Brigham Young University – Marriott School of Business, Provo, UT
 * **Cloud Infrastructure & DevOps:** Proficient in **AWS** (EC2, RDS, S3, Lambda, API Gateway, IAM, EKS, Auto Scaling, Route53), **Docker**, **Kubernetes**, and **Terraform** for infrastructure automation. Experienced in **CI/CD** tools (AWS CodePipeline, CodeDeploy) and network fundamentals (TCP/IP, Routing, Switching).  
 * **Cybersecurity:** Experienced in **penetration testing**, malware analysis, system hardening, encryption, authentication, **IDS/IPS**, and risk assessments, with strong documentation and reporting skills.  
 * **Software Development:** Skilled in **Python**, **JavaScript**, C\#, HTML/CSS, and full-stack development with ASP.NET Core MVC.  
+* **AI & automation:** LangChain.js agent patterns, Google Gemini APIs, embedding-based knowledge retrieval, and integration of external tools (web search, calculator) in a Node.js service.  
 * **Project Management & Collaboration:** Adept in **Agile**/**Scrum**, paired programming, and technical documentation (activity, sequence, and class diagrams).
 
 ---
 
 **Experience**
+
+**Sales Engineer – Intern	Starts May 18, 2026 \- Aug 2026**  
+Lucid Software
+
+* Summer internship supporting customer-facing technical evaluations, demonstrations, and solution conversations in a collaborative sales engineering culture  
+* Translating product capabilities into clear business value for prospects and customers  
 
 **Platform Engineer Intern	June 2025 \- Aug 2025**  
 SonicWall, Remote
@@ -75,6 +84,7 @@ EchoCraft Web Development Studios, Provo, UT
   * Implemented **API Gateway & Lambda** for seamless **data transmission and compute efficiency**.  
   * Designed a **DynamoDB database** to simulate real-time data streaming for a **large restaurant franchise**.  
   * Utilized **Terraform** to automate **cloud infrastructure provisioning and management**.  
+  * Added an **embedded portfolio AI agent** (LangChain.js + Gemini + tools) with a separate Node/Express backend for recruiter Q&A over Cameron’s project docs  
 * **BYU Information Systems \- Program-Wide Tech Competition – Fall 2023**  
   *Technologies & Skills: Elastic Beanstalk, RDS, EC2, JavaScript, Node.js, Python Pandas, Presentation*  
   * Awarded **2nd place** among 56 teams for outstanding web development and professional presentation capabilities.   

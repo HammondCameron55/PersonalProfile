@@ -13,7 +13,9 @@ Personal Website: [https://www.cameronhammonddigitalportfolio.com](https://www.c
 DevOps Emphasis, STEM-Certified Technical Program  
 Brigham Young University – Marriott School of Business, Provo, UT
 
-* Relevant Coursework: **Technical Sales**, Technical Business Strategy, AI Projects, Cloud Engineering  
+* Relevant Coursework: **Sales Engineering**, **Technical Sales**, Technical Business Strategy, **Agentic AI Development**, Cloud Engineering  
+* **Agentic AI Development** — multi-tool agents, RAG, evaluation, and production patterns; materials: [https://d1dtpagvh0qhqn.cloudfront.net/](https://d1dtpagvh0qhqn.cloudfront.net/)  
+* **Sales Engineering (coursework)** — four-level discovery (situational → strategic), active listening and EQ, “purpose / process / time / outcome” facilitation, ROI and value translation, stakeholder-specific business cases, high-EQ objection handling, micro-commitments and assumptive asks, PoC leadership, outcome-led demos (pain → turning point → outcome), and AI-assisted sales productivity  
 * GPA **3.94**/**4.00**  
 * Full-Tuition Academic Scholarship, Marriott School **Dean’s List** Academic Award Recipient  
 * Association of Information Systems (**AIS**), Mentorship Program (Mentoring 8 Junior IS students) 
@@ -21,6 +23,12 @@ Brigham Young University – Marriott School of Business, Provo, UT
 ---
 
 **Customer-Facing & Technical Experience**
+
+**Sales Engineer – Intern	Starts May 18, 2026 \- Aug 2026**  
+Lucid Software
+
+* Summer internship in sales engineering: supporting evaluations, demonstrations, and solution alignment with prospects and customers  
+* Partnering with account teams to translate product capabilities into measurable business outcomes  
 
 **Platform Engineer Intern	June 2025 \- Aug 2025**  
 SonicWall, Remote
@@ -53,12 +61,16 @@ EchoCraft Web Development Studios, Provo, UT
 * **DevOps, Automation & APIs:** Terraform, Docker, Kubernetes; CI/CD pipelines (AWS CodePipeline, CodeDeploy), API integrations, and scripting to support scalable, repeatable workflows.  
 * **Security & Risk Concepts:** Cloud security fundamentals, system hardening, authentication, and risk assessment  
 * **Software & Scripting:** Python, JavaScript, C\#, HTML/CSS; familiarity with full-stack development concepts using ASP.NET Core MVC.  
+* **AI for customer conversations:** Portfolio-embedded agent (LangChain.js + Gemini + retrieval and tools) demonstrating how AI can augment—not replace—technical sellers on repetitive Q&A and research tasks.  
 * **Collaboration, Delivery & Enablement**: Agile/Scrum methodologies, Git-based workflows, and clear technical documentation to support knowledge transfer for technical and non-technical audiences.
 
 ---
 
 **Accomplishments, Projects, & Certifications**
 
+* **Personal AWS portfolio + AI agent**  
+  *Technologies: AWS Amplify/S3 patterns, API Gateway, Lambda, DynamoDB, Terraform, Node.js, LangChain.js, Gemini*  
+  * Public recruiter-facing site with serverless integrations and an embedded **AI agent** scoped to Cameron’s projects and background  
 * **MISM Capstone Project: Hill Air Force Base Cybersecurity Training**  
   *Technologies: Virtualization (VMs), Cybersecurity*  
   * Designed and delivered a virtualized cybersecurity training environment tailored to Air Force technical professionals  
