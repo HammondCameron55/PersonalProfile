@@ -43,11 +43,13 @@ Browsers block or fail requests when an **HTTPS** portfolio page tries to call *
 - **Local dev:** `http://localhost:8787/api/agent/chat`
 - **Deployed site:** `<origin>/api/agent/chat` unless you set `window.AGENT_CHAT_ENDPOINT` or `<meta name="cam-agent-chat-endpoint" content="https://...">`
 
-**Recommended:** Add Amplify Hosting **rewrites** so `/api/agent/*` proxies to your deployed `agent-backend` (API Gateway HTTP API, Lambda function URL, App Runner, etc.). Copy `CamDigitalProfile/_redirects.example` to `CamDigitalProfile/_redirects` and substitute your backend base URL.
+**Recommended:** Add Amplify Hosting **rewrites** (or a `CamDigitalProfile/_redirects` file Amplify honors) so **`/api/agent/chat`** and **`/api/agent/health`** on your **site origin** (e.g. `https://cameronhammonddigitalportfolio.com`) proxy to your **serverless agent** URL (Lambda function URL, API Gateway, or Amplify Gen-2 function route). Without this, the browser calls your static host at `/api/agent/chat`, gets **404**, or fails the request. See `CamDigitalProfile/_redirects.example` for the pattern.
 
-Set backend **`ALLOWED_ORIGIN`** to your real site origin (comma-separated if you use multiple domains). Example:
+If the frontend and agent live in the **same Amplify app**, add rules in **Amplify Console → Hosting → Rewrites and redirects** (or keep `_redirects` in the published root) so those paths forward to the deployed function’s HTTPS URL.
 
-`ALLOWED_ORIGIN=https://www.cameronhammonddigitalportfolio.com`
+Set backend **`ALLOWED_ORIGIN`** to the **exact** origin(s) visitors use (apex and `www` differ). Example:
+
+`ALLOWED_ORIGIN=https://cameronhammonddigitalportfolio.com,https://www.cameronhammonddigitalportfolio.com`
 
 ## Documentation
 

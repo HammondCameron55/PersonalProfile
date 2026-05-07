@@ -24,7 +24,7 @@ Brigham Young University – Marriott School of Business, Provo, UT
 
 **Customer-Facing & Technical Experience**
 
-**Sales Engineer – Intern	Starts May 18, 2026 \- Aug 2026**  
+**Sales Engineer – Intern	Starts May 18, 2026**  
 Lucid Software
 
 * Summer internship in sales engineering: supporting evaluations, demonstrations, and solution alignment with prospects and customers  
