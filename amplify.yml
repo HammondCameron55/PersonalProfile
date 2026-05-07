@@ -10,9 +10,20 @@ applications:
             - echo "Publish static site; optional agent URL injection."
             - |
                 set -e
-                APPROOT="${AMPLIFY_MONOREPO_APP_ROOT:-CamDigitalProfile}"
-                cd "$APPROOT"
-                python3 scripts/inject-agent-endpoint.py
+                # Monorepo: Amplify often already uses appRoot as cwd; repo clone may be at repo root.
+                if [ -f scripts/inject-agent-endpoint.py ]; then
+                  echo "inject-agent-endpoint: cwd=$(pwd) (app root)"
+                  python3 scripts/inject-agent-endpoint.py
+                elif [ -f CamDigitalProfile/scripts/inject-agent-endpoint.py ]; then
+                  cd CamDigitalProfile
+                  echo "inject-agent-endpoint: cwd=$(pwd) (entered CamDigitalProfile)"
+                  python3 scripts/inject-agent-endpoint.py
+                else
+                  echo "inject-agent-endpoint: could not find script"
+                  ls -la
+                  ls -la CamDigitalProfile 2>/dev/null || true
+                  exit 1
+                fi
       artifacts:
         baseDirectory: .
         files:
