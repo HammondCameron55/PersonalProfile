@@ -1,13 +1,16 @@
-# AWS Amplify — static site root (adjust appRoot if your Amplify app uses a subfolder).
+# AWS Amplify Hosting — monorepo build spec (required when the app is connected as a monorepo).
+# AMPLIFY_MONOREPO_APP_ROOT in the Amplify console must match appRoot (e.g. CamDigitalProfile).
 version: 1
-frontend:
-  phases:
-    build:
-      commands:
-        - echo "Static site; no build step required."
-  artifacts:
-    baseDirectory: CamDigitalProfile
-    files:
-      - "**/*"
-  cache:
-    paths: []
+applications:
+  - appRoot: CamDigitalProfile
+    frontend:
+      phases:
+        build:
+          commands:
+            - echo "Static site; no build step required."
+      artifacts:
+        baseDirectory: .
+        files:
+          - "**/*"
+      cache:
+        paths: []
