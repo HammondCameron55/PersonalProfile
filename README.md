@@ -55,6 +55,18 @@ Set backend **`ALLOWED_ORIGIN`** to the **exact** origin(s) visitors use (apex a
 
 If the Amplify app uses a monorepo app root (e.g. **`AMPLIFY_MONOREPO_APP_ROOT=CamDigitalProfile`**), root **`amplify.yml`** must use an **`applications`** list with **`appRoot`**, not a top-level **`frontend:`** block. Otherwise Amplify fails with **`CustomerError: Monorepo spec provided without "applications" key`**. See [monorepo configuration](https://docs.aws.amazon.com/amplify/latest/userguide/monorepo-configuration.html).
 
+### Point the live site at your agent (404 on `/api/agent/chat`)
+
+If you **do not** use same-origin **rewrites** to your Lambda, the browser posts to `https://<your-domain>/api/agent/chat` and Amplify returns **404** (HTML), which shows as a chat error.
+
+**Option A — Amplify build env (simplest with this repo):** In Amplify → **Environment variables**, add **`PORTFOLIO_AGENT_CHAT_URL`** for **All branches** (available at build time). Value must be the **full HTTPS URL** to the chat route, for example:
+
+`https://xxxxxxxx.lambda-url.us-east-1.on.aws/api/agent/chat`
+
+On each build, `scripts/inject-agent-endpoint.py` writes that URL into **`CamDigitalProfile/index.html`** `meta name="cam-agent-chat-endpoint"`, which the UI reads before calling `fetch`.
+
+**Option B — Hosting rewrites:** Keep `meta` empty and add **Rewrites and redirects** (or `_redirects`) so `/api/agent/chat` proxies to the same URL as above. See `CamDigitalProfile/_redirects.example`.
+
 ## Documentation
 
 - **Runbook & env:** [CamDigitalProfile/AI_Projects/docs/AGENT-BACKEND-RUNBOOK.md](CamDigitalProfile/AI_Projects/docs/AGENT-BACKEND-RUNBOOK.md)  

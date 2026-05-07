@@ -298,8 +298,17 @@
       try {
         payload = JSON.parse(rawBody);
       } catch (_error) {
+        const host = window.location.hostname;
+        const isLocal = host === 'localhost' || host === '127.0.0.1';
+        const hint404 =
+          response.status === 404 && !isLocal
+            ? ` No JSON from ${endpoint.split('?')[0]} — usually missing Amplify rewrite to your agent, or set Amplify build env PORTFOLIO_AGENT_CHAT_URL to your full chat HTTPS URL (see README).`
+            : '';
+        const hintLocal = isLocal
+          ? ' For local dev, run agent-backend on port 8787 (npm run dev in agent-backend/).'
+          : '';
         payload = {
-          error: `Backend returned non-JSON response (status ${response.status}). Check that agent-backend is running on http://localhost:8787.`
+          error: `Backend returned non-JSON response (HTTP ${response.status}).${hint404}${hintLocal}`
         };
       }
     }
