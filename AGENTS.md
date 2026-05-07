@@ -35,5 +35,6 @@ The `.env` file is expected at the **repo root** (`/workspace/.env`), not inside
 - **No linter/TypeScript config** exists in this project. Code quality checks are limited to unit tests.
 - **No Docker/containers** needed — the project is intentionally simple.
 - **The backend works without API keys** for basic chat (fallback behavior), but full AI features require `GEMINI_API_KEY`.
+- **Secret → .env bridging**: The backend reads keys from `/workspace/.env` (not from environment variables directly). If `GEMINI_API_KEY` is injected as an env var, you must write it to `/workspace/.env` before starting the server: `echo "GEMINI_API_KEY=$GEMINI_API_KEY" > /workspace/.env`
 - **`npx serve`** may prompt to install on first run. Use `npx -y serve CamDigitalProfile -l 3000` to skip the prompt.
 - **All state is in-memory** — no database required. Restarting the server clears session history.
