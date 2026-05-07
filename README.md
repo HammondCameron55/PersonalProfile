@@ -51,6 +51,12 @@ Set backend **`ALLOWED_ORIGIN`** to the **exact** origin(s) visitors use (apex a
 
 `ALLOWED_ORIGIN=https://cameronhammonddigitalportfolio.com,https://www.cameronhammonddigitalportfolio.com`
 
+### Amplify build: monorepo `amplify.yml`
+
+If the Amplify app was created with **“My app is a monorepo”** and app root **`CamDigitalProfile`**, the repo root **`amplify.yml`** must use an **`applications`** list (see [monorepo configuration](https://docs.aws.amazon.com/amplify/latest/userguide/monorepo-configuration.html)). A top-level `frontend:` block triggers **`CustomerError: Monorepo spec provided without "applications" key`**.
+
+Ensure **Environment variable** `AMPLIFY_MONOREPO_APP_ROOT` equals **`CamDigitalProfile`** (same as `appRoot` in `amplify.yml`).
+
 ## Documentation
 
 - **Runbook & env:** [CamDigitalProfile/AI_Projects/docs/AGENT-BACKEND-RUNBOOK.md](CamDigitalProfile/AI_Projects/docs/AGENT-BACKEND-RUNBOOK.md)  
