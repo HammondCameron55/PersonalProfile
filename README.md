@@ -67,6 +67,8 @@ On each build, `scripts/inject-agent-endpoint.py` writes that URL into **`CamDig
 
 **Option B — Hosting rewrites:** Keep `meta` empty and add **Rewrites and redirects** (or `_redirects`) so `/api/agent/chat` proxies to the same URL as above. See `CamDigitalProfile/_redirects.example`.
 
+The build step locates `scripts/inject-agent-endpoint.py` whether the job’s **current directory is already `CamDigitalProfile`** (common for `appRoot`) or the **repository root** (then it `cd`s into that folder).
+
 ## Documentation
 
 - **Runbook & env:** [CamDigitalProfile/AI_Projects/docs/AGENT-BACKEND-RUNBOOK.md](CamDigitalProfile/AI_Projects/docs/AGENT-BACKEND-RUNBOOK.md)  
