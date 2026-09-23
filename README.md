@@ -4,7 +4,7 @@ Monorepo for **Cameron Hammond**’s recruiter-facing portfolio site plus an **a
 
 ## What's in the repo
 
-- **`CamDigitalProfile/`** — Static site (`index.html`, assets) with an embedded chat UI that talks to the agent API.
+- **`CamDigitalProfile/`** — Static site (`index.html`, assets). The AI chat UI is currently commented out in `index.html` until it is re-enabled.
 - **`agent-backend/`** — Node.js (ESM) Express service: ReAct-style LangChain agent with `calculator`, `web_search` (Tavily), and embedding-based `knowledge_base` RAG over Cameron’s docs.
 
 ## Run the agent backend locally
@@ -34,7 +34,9 @@ From `agent-backend/`:
 
 ## Use the site chat
 
-Open **`CamDigitalProfile/index.html`** in a browser (e.g. Live Server). The chat UI targets **`http://localhost:8787/api/agent/chat`** when the hostname is `localhost` / `127.0.0.1`; on any other host it defaults to **same-origin** `/api/agent/chat` (see `_redirects.example` and README for production).
+The recruiter-facing AI chat widget is **temporarily disabled** in `CamDigitalProfile/index.html` (commented out intentionally).
+
+When re-enabled, the UI targets **`http://localhost:8787/api/agent/chat`** when the hostname is `localhost` / `127.0.0.1`; on any other host it defaults to **same-origin** `/api/agent/chat` (see `_redirects.example` and README for production).
 
 ## Production chat (fixing “Failed to fetch”)
 
