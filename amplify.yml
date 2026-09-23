@@ -11,7 +11,14 @@ applications:
             - |
                 set -e
                 APPROOT="${AMPLIFY_MONOREPO_APP_ROOT:-CamDigitalProfile}"
-                cd "$APPROOT"
+                if [ -f "scripts/inject-agent-endpoint.py" ] && [ -f "index.html" ]; then
+                  echo "Already in app root: $(pwd)"
+                elif [ -d "$APPROOT" ]; then
+                  cd "$APPROOT"
+                else
+                  echo "ERROR: Could not locate app root '$APPROOT' from $(pwd)" >&2
+                  exit 1
+                fi
                 python3 scripts/inject-agent-endpoint.py
       artifacts:
         baseDirectory: .
