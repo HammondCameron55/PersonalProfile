@@ -2,7 +2,7 @@
 
 ## Locations
 - Backend service: `agent-backend/`
-- Frontend chat UI: `CamDigitalProfile/index.html`, `CamDigitalProfile/assets/js/main.js`, `CamDigitalProfile/assets/css/main.css`
+- Frontend chat UI code (currently disabled in `index.html`): `CamDigitalProfile/index.html`, `CamDigitalProfile/assets/js/main.js`, `CamDigitalProfile/assets/css/main.css`
 
 ## Environment Variables
 - `GEMINI_API_KEY` (required for chat completion)
@@ -77,5 +77,6 @@ From `agent-backend/`:
 8. `What are Cameron's current career goals?`
 
 ## Notes
+- The chat UI section in `CamDigitalProfile/index.html` is intentionally commented out for now so the public site runs without the AI chat surface.
 - The chat UI resolves `POST /api/agent/chat` automatically: **localhost** uses `http://localhost:8787/api/agent/chat`; **production** defaults to **same-origin** `https://<your-domain>/api/agent/chat` (configure Amplify rewrites to your agent backend). Override with `meta[name="cam-agent-chat-endpoint"]` or `window.AGENT_CHAT_ENDPOINT` before `main.js` loads.
 - UI transparency intentionally exposes tool names only (no chain-of-thought).

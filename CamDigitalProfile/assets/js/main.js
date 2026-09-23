@@ -228,6 +228,8 @@
 
   /**
    * Portfolio AI agent chat widget
+   * Temporarily inactive because the corresponding HTML block in index.html is commented out.
+   * Keep this logic for future re-enable to avoid re-implementing endpoint/session handling.
    */
   const chatForm = document.querySelector('#agent-chat-form');
   const chatInput = document.querySelector('#agent-chat-input');
